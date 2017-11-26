@@ -1,0 +1,39 @@
+{
+  "name": "find-unused-sass-variables",
+  "version": "1.0.0",
+  "description": "A small tool to find unused Sass variables",
+  "author": "XhmikosR <xhmikosr@gmail.com>",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "eslint": "eslint .",
+    "lint": "npm run eslint",
+    "test": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XhmikosR/find-unused-sass-variables.git"
+  },
+  "bugs": {
+    "url": "https://github.com/XhmikosR/find-unused-sass-variables/issues"
+  },
+  "homepage": "https://github.com/XhmikosR/find-unused-sass-variables#readme",
+  "dependencies": {
+    "glob": "^7.1.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.12.0"
+  },
+  "files": [
+    "index.js"
+  ],
+  "engines": {
+    "node": ">=6"
+  },
+  "keywords": [
+    "sass",
+    "unused",
+    "variables",
+    "scss"
+  ]
+}
