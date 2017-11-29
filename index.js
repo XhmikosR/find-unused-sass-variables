@@ -9,19 +9,15 @@ function regExpQuote(str) {
     return str.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-function findUnusedVars (dir, isCLI) {
+function findUnusedVars(dir) {
     if (!(fs.existsSync(dir) && fs.statSync(dir).isDirectory())) {
         throw new Error(`"${dir}": Not a valid directory!`);
     }
 
-    if (isCLI) {
-        console.log(`Finding unused variables in "${dir}"...`);
-    }
+    // Store unused vars from all files
+    const unusedVars = [];
 
-    // store unused vars
-    const unUsedVars = [];
-
-    // Array of all Sass files' content
+    // Array of all Sass files
     const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
     // String of all Sass files' content
     let sassFilesString = '';
@@ -33,24 +29,21 @@ function findUnusedVars (dir, isCLI) {
     // Array of all Sass variables
     const variables = sassFilesString.match(/(^\$[a-zA-Z0-9_-]+[^:])/gm);
 
-    if (isCLI) {
-        console.log(`There's a total of ${variables.length} variables.`);
-    }
-
     // Loop through each variable
     variables.forEach((variable) => {
         const re = new RegExp(regExpQuote(variable), 'g');
         const count = sassFilesString.match(re).length;
 
         if (count === 1) {
-            if (isCLI) {
-                console.log(`Variable "${variable}" is only used once!`);
-            }
-            unUsedVars.push(variable);
+            unusedVars.push(variable);
         }
     });
 
-    return unUsedVars;
+    return {
+        dir,
+        unused: unusedVars,
+        total: variables.length
+    };
 }
 
 module.exports = {

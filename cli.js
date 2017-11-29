@@ -2,6 +2,7 @@
 
 'use strict';
 
+const path = require('path');
 const fusv = require('./index');
 
 let globalSuccess = true;
@@ -14,12 +15,22 @@ function main(args) {
     }
 
     args.forEach((arg) => {
-        const vars = fusv.find(arg, true);
+        const dir = path.resolve(arg);
 
-        if (vars.length > 0) {
+        console.log(`Finding unused variables in "${dir}"...`);
+
+        const unusedVars = fusv.find(dir);
+
+        console.log(`There's a total of ${unusedVars.total} variables.`);
+
+        unusedVars.unused.forEach((unusedVar) => {
+            console.log(`Variable "${unusedVar}" is only used once!`);
+        });
+
+        if (unusedVars.unused.length > 0) {
             globalSuccess = false;
         } else {
-            console.log(`No unused variables found in "${arg}".`);
+            console.log('No unused variables found!');
         }
     });
 
