@@ -1,37 +1,58 @@
-#!/usr/bin/env node
-
-/*!
- * Script to find unused Sass variables.
- *
- * Copyright 2017, XhmikosR
- * Licensed under the MIT License
- */
-
 'use strict';
 
-const findUnusedVars = require('./src/findUnusedVars');
+const fs = require('fs');
+const path = require('path');
+const glob = require('glob');
 
-let globalSuccess = true;
+// Blame TC39... https://github.com/benjamingr/RegExp.escape/issues/37
+function regExpQuote(str) {
+    return str.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+}
 
-function main(args) {
-    if (args.length < 1) {
-        console.log('Wrong arguments!');
-        console.log('Usage: find-unused-sass-variables folder [, folder2...]');
-        process.exit(1);
+function findUnusedVars (dir, isCLI) {
+    if (!(fs.existsSync(dir) && fs.statSync(dir).isDirectory())) {
+        throw new Error(`"${dir}": Not a valid directory!`);
     }
 
-    args.forEach((arg) => {
-        const vars = findUnusedVars(arg, true);
+    if (isCLI) {
+        console.log(`Finding unused variables in "${dir}"...`);
+    }
 
-        if (vars.length > 0 && globalSuccess) {
-            globalSuccess = false;
+    // store unused vars
+    const unUsedVars = [];
+
+    // Array of all Sass files' content
+    const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
+    // String of all Sass files' content
+    let sassFilesString = '';
+
+    sassFiles.forEach((file) => {
+        sassFilesString += fs.readFileSync(file, 'utf8');
+    });
+
+    // Array of all Sass variables
+    const variables = sassFilesString.match(/(^\$[a-zA-Z0-9_-]+[^:])/gm);
+
+    if (isCLI) {
+        console.log(`There's a total of ${variables.length} variables.`);
+    }
+
+    // Loop through each variable
+    variables.forEach((variable) => {
+        const re = new RegExp(regExpQuote(variable), 'g');
+        const count = sassFilesString.match(re).length;
+
+        if (count === 1) {
+            if (isCLI) {
+                console.log(`Variable "${variable}" is only used once!`);
+            }
+            unUsedVars.push(variable);
         }
     });
 
-    if (globalSuccess === false) {
-        process.exit(1);
-    }
+    return unUsedVars;
 }
 
-// The first and second args are: path/to/node script.js
-main(process.argv.slice(2));
+module.exports = {
+    find: findUnusedVars
+};
