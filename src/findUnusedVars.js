@@ -5,7 +5,9 @@ const path = require('path');
 const glob = require('glob');
 
 // Blame TC39... https://github.com/benjamingr/RegExp.escape/issues/37
-RegExp.quote = (string) => string.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+function regExpQuote(str) {
+    return str.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+}
 
 function findUnusedVars (dir, isCLI) {
     if (!(fs.existsSync(dir) && fs.statSync(dir).isDirectory())) {
@@ -42,8 +44,8 @@ function findUnusedVars (dir, isCLI) {
 
     // Loop through each variable
     variables.forEach((variable) => {
-        const re = new RegExp(RegExp.quote(variable), 'g');
-        const count = (sassFilesString.match(re) || []).length;
+        const re = new RegExp(regExpQuote(variable), 'g');
+        const count = sassFilesString.match(re).length;
 
         if (count === 1) {
             if (isCLI) {

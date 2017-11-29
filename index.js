@@ -10,6 +10,7 @@
 'use strict';
 
 const findUnusedVars = require('./src/findUnusedVars');
+
 let globalSuccess = true;
 
 function main(args) {
