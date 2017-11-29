@@ -9,7 +9,9 @@ function regExpQuote(str) {
     return str.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-function findUnusedVars(dir) {
+function findUnusedVars(strDir) {
+    const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
+
     if (!(fs.existsSync(dir) && fs.statSync(dir).isDirectory())) {
         throw new Error(`"${dir}": Not a valid directory!`);
     }
@@ -40,7 +42,6 @@ function findUnusedVars(dir) {
     });
 
     return {
-        dir,
         unused: unusedVars,
         total: variables.length
     };
