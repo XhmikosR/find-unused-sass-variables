@@ -9,6 +9,17 @@ A simple tool to check for unused Sass variables in a directory.
 
 ## Usage
 
-```
+```shell
 find-unused-sass-variables folder [, folder2...]
+# or
+fusv folder [, folder2...]
 ```
+
+## Notes
+
+* The tool's logic is pretty "dumb"; if you use the same name for a variable in different files or namespaces,
+  then it won't distinguish between them.
+
+## License
+
+MIT
