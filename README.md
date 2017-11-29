@@ -15,6 +15,12 @@ find-unused-sass-variables folder [, folder2...]
 fusv folder [, folder2...]
 ```
 
+```js
+const fusv = require('find-unused-sass-variables')
+// scss is a folder
+const unUsed = fusv.find('scss')
+```
+
 ## Notes
 
 * The tool's logic is pretty "dumb"; if you use the same name for a variable in different files or namespaces,
