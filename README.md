@@ -15,18 +15,29 @@ find-unused-sass-variables folder [, folder2...]
 fusv folder [, folder2...]
 ```
 
+## API
+
 ```js
 const fusv = require('find-unused-sass-variables')
-// scss is a folder
+// 'scss' is a folder
 const unused = fusv.find('scss')
 // Array of unused variables
+console.log(unused.unused);
+// [ '$foo', '$bar', '$imunused' ]
+console.log(unused.total);
+// 3
 ```
+
+### find([dir])
+
+* `dir`: string
+* Returns an object with `unused` and `total`. `unused` has the array of unused variables and `total` their count.
 
 ## Notes
 
 * The tool's logic is pretty "dumb"; if you use the same name for a variable in different files or namespaces,
   then it won't distinguish between them.
-* The tool looks for `.scss` files only currently.
+* The tool only looks for `.scss` files currently.
 
 ## License
 
