@@ -3,7 +3,7 @@
 'use strict';
 
 const path = require('path');
-const fusv = require('./index');
+const fusv = require('./index.js');
 
 // The first and second args are: path/to/node script.js
 const args = process.argv.slice(2);
