@@ -4,35 +4,43 @@
 
 const path = require('path');
 const fusv = require('./index.js');
+const chalk = require('chalk');
 
 // The first and second args are: path/to/node script.js
 const args = process.argv.slice(2);
 
 let success = true;
 
+const log = console.log;
+
+// colors
+const errorClr = chalk.red.bold;
+const infoClr = chalk.cyan;
+const successClr = chalk.green;
+
 if (args.length < 1) {
-    console.log('Wrong arguments!');
-    console.log('Usage: find-unused-sass-variables folder [, folder2...]');
+    log(errorClr('Wrong arguments!'));
+    log('Usage: find-unused-sass-variables folder [, folder2...]');
     process.exit(1);
 }
 
 args.forEach((arg) => {
     const dir = path.resolve(arg);
 
-    console.log(`Finding unused variables in "${dir}"...`);
+    log(`Finding unused variables in "${infoClr.bold(dir)}"...`);
 
     const unusedVars = fusv.find(dir);
 
-    console.log(`There's a total of ${unusedVars.total} variables.`);
+    log(`There's a total of ${infoClr.bold(unusedVars.total)} variables.`);
 
     unusedVars.unused.forEach((unusedVar) => {
-        console.log(`Variable "${unusedVar}" is only used once!`);
+        log(chalk`{yellow Variable {reset.bold %s} is only used once!}`, unusedVar);
     });
 
     if (unusedVars.unused.length > 0) {
         success = false;
     } else {
-        console.log('No unused variables found!');
+        log(successClr('No unused variables found!'));
     }
 });
 
