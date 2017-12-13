@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/XhmikosR/find-unused-sass-variables#readme",
   "dependencies": {
+    "chalk": "^2.3.0",
     "glob": "^7.1.2"
   },
   "devDependencies": {
