@@ -28,10 +28,10 @@ args.forEach((arg) => {
 
     const unusedVars = fusv.find(dir);
 
-    log(`There's a total of ${infoClr.bold(unusedVars.total)} variables.`);
+    log(`Found ${infoClr.bold(unusedVars.total)} total variables.`);
 
     unusedVars.unused.forEach((unusedVar) => {
-        log(chalk`{yellow Variable {reset.bold %s} is only used once!}`, unusedVar);
+        log(chalk`{yellow Variable {reset.bold %s} is not being used!}`, unusedVar);
     });
 
     if (unusedVars.unused.length > 0) {
