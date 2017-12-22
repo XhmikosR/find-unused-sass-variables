@@ -27,7 +27,8 @@
   "homepage": "https://github.com/XhmikosR/find-unused-sass-variables#readme",
   "dependencies": {
     "chalk": "^2.4.1",
-    "glob": "^7.1.3"
+    "glob": "^7.1.3",
+    "ora": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^5.5.0"
