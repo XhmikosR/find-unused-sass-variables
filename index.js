@@ -29,7 +29,7 @@ function findUnusedVars(strDir) {
     });
 
     // Array of all Sass variables
-    const variables = sassFilesString.match(/(^\$[\w-]+[^:\s])/gm) || [];
+    const variables = sassFilesString.match(/(^\$[\w-]{1,}[^:\s]?)/gm) || [];
 
     // Loop through each variable
     variables.forEach((variable) => {
