@@ -148,7 +148,7 @@
         "no-new-object": "error",
         "no-octal": "error",
         "no-param-reassign": [
-            "error",
+            "off",
             {
                 "props": false
             }
