@@ -15,7 +15,8 @@
   "scripts": {
     "eslint": "eslint .",
     "lint": "npm run eslint",
-    "test": "npm run eslint"
+    "test": "npm run eslint && npm run test:integration",
+    "test:integration": "node tests/integration.js"
   },
   "repository": {
     "type": "git",
