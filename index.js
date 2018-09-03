@@ -21,12 +21,12 @@ function findUnusedVars(strDir) {
 
     // Array of all Sass files
     const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
-    // String of all Sass files' content
-    let sassFilesString = '';
 
-    sassFiles.forEach((file) => {
-        sassFilesString += fs.readFileSync(file, 'utf8');
-    });
+    // String of all Sass files' content
+    const sassFilesString = sassFiles.reduce((sassStr, file) => {
+        sassStr += fs.readFileSync(file, 'utf8');
+        return sassStr;
+    }, '');
 
     // Array of all Sass variables
     const variables = sassFilesString.match(/(^\$[\w-]+[^:\s])/gm) || [];
