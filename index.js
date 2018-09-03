@@ -16,9 +16,6 @@ function findUnusedVars(strDir) {
         throw new Error(`"${dir}": Not a valid directory!`);
     }
 
-    // Store unused vars from all files
-    const unusedVars = [];
-
     // Array of all Sass files
     const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
 
@@ -31,14 +28,11 @@ function findUnusedVars(strDir) {
     // Array of all Sass variables
     const variables = sassFilesString.match(/(^\$[\w-]+[^:\s])/gm) || [];
 
-    // Loop through each variable
-    variables.forEach((variable) => {
+    // Store unused vars from all files and loop through each variable
+    const unusedVars = variables.filter((variable) => {
         const re = new RegExp(regExpQuote(variable), 'g');
-        const count = sassFilesString.match(re).length;
 
-        if (count === 1) {
-            unusedVars.push(variable);
-        }
+        return sassFilesString.match(re).length === 1;
     });
 
     return {
