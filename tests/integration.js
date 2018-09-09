@@ -3,7 +3,10 @@
 const fusv = require('../index');
 
 const expectedUnused = [
-    '$white'
+    '$white',
+    '$a',
+    '$b',
+    '$unused'
 ];
 
 console.log('Run integration tests...');
