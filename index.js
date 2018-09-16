@@ -3,6 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
+const scssParser = require('postcss-scss/lib/scss-parse');
+const Declaration = require('postcss/lib/declaration');
 
 // Blame TC39... https://github.com/benjamingr/RegExp.escape/issues/37
 function regExpQuote(str) {
@@ -25,8 +27,10 @@ function findUnusedVars(strDir) {
         return sassStr;
     }, '');
 
-    // Array of all Sass variables
-    const variables = sassFilesString.match(/^\$[\w-]+(^\s:)?/gm) || [];
+    const parsedScss = scssParser(sassFilesString);
+    const variables = parsedScss.nodes
+        .filter((node) => node instanceof Declaration)
+        .map((declaration) => declaration.prop);
 
     // Store unused vars from all files and loop through each variable
     const unusedVars = variables.filter((variable) => {
