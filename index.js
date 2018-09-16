@@ -22,10 +22,15 @@ function findUnusedVars(strDir) {
     const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
 
     // String of all Sass files' content
-    const sassFilesString = sassFiles.reduce((sassStr, file) => {
+    let sassFilesString = sassFiles.reduce((sassStr, file) => {
         sassStr += fs.readFileSync(file, 'utf8');
         return sassStr;
     }, '');
+
+    // Remove jekyll comments
+    if (sassFilesString.includes('---')) {
+        sassFilesString = sassFilesString.replace(/---/g, '');
+    }
 
     const parsedScss = scssParser(sassFilesString);
     const variables = parsedScss.nodes
