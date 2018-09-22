@@ -7,7 +7,17 @@ const chalk = require('chalk');
 const ora = require('ora');
 const fusv = require('./index.js');
 
-const args = process.argv.slice(2); // The first and second args are: path/to/node script.js
+// The first and second args are: path/to/node script.js
+// If an argument starts with --, exclude the argument and the next argument.
+const args = process.argv.slice(2)
+                .filter((arg, i, list) => !arg.startsWith('--') && (i === 0 || !list[i - 1].startsWith('--')));
+
+// Ignored variables, comma separated.
+const ignore = process.argv.slice(2)
+                .filter((arg, i, list) => i !== 0 && list[i - 1] === '--ignore')
+                .join(',')
+                .split(',');
+
 const log = console.log;
 let success = true;
 
@@ -30,7 +40,7 @@ args.forEach((arg) => {
 
     spinner.info(`Finding unused variables in "${infoClr.bold(dir)}"...`);
 
-    const unusedVars = fusv.find(dir);
+    const unusedVars = fusv.find(dir, { ignore });
 
     spinner.info(`${infoClr.bold(unusedVars.total)} total variables.`);
 

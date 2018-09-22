@@ -5,14 +5,25 @@ const path = require('path');
 const glob = require('glob');
 const scssParser = require('postcss-scss/lib/scss-parse');
 const Declaration = require('postcss/lib/declaration');
+const defaultOption = {
+    ignore: []
+};
 
 // Blame TC39... https://github.com/benjamingr/RegExp.escape/issues/37
 function regExpQuote(str) {
     return str.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-function findUnusedVars(strDir) {
+function findUnusedVars(strDir, opts) {
+    const options = Object.assign(defaultOption, opts);
     const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
+
+    if (typeof options.ignore === 'string') {
+        options.ignore = options.ignore.split(',');
+    }
+
+    // Trim list of ignored variables
+    options.ignore = options.ignore.map((val) => val.trim());
 
     if (!(fs.existsSync(dir) && fs.statSync(dir).isDirectory())) {
         throw new Error(`"${dir}": Not a valid directory!`);
@@ -35,7 +46,8 @@ function findUnusedVars(strDir) {
     const parsedScss = scssParser(sassFilesString);
     const variables = parsedScss.nodes
         .filter((node) => node instanceof Declaration)
-        .map((declaration) => declaration.prop);
+        .map((declaration) => declaration.prop)
+        .filter((variable) => !options.ignore.includes(variable));
 
     // Store unused vars from all files and loop through each variable
     const unusedVars = variables.filter((variable) => {
