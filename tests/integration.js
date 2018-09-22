@@ -9,9 +9,11 @@ const expectedUnused = [
     '$unused'
 ];
 
+const ignore = ['$ignored-variable'];
+
 console.log('Run integration tests...');
 
-const result = fusv.find('./');
+const result = fusv.find('./', { ignore });
 
 if (result.total === expectedUnused.length) {
     console.info(`All tests passed (${result.total})`);

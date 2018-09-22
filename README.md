@@ -33,6 +33,21 @@ console.log(unused.total);
 * `dir`: string
 * Returns an object with `unused` and `total`. `unused` has the array of unused variables and `total` their count.
 
+### Ignore variables
+
+```shell
+fusv folder --ignore '$my-var,$my-second-var'
+```
+Or
+
+```js
+const fusv = require('find-unused-sass-variables')
+const ignoredVars = ['$my-var', '$my-second-var']
+  
+const unused = fusv.find('scss', { ignoredVars })
+```
+
+
 ## Notes
 
 * The tool's logic is pretty "dumb"; if you use the same name for a variable in different files or namespaces,
