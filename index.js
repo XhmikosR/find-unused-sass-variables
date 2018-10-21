@@ -18,8 +18,8 @@ function findUnusedVars(strDir, opts) {
     const options = Object.assign(defaultOption, opts);
     const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
 
-    if (typeof options.ignore === 'string') {
-        options.ignore = options.ignore.split(',');
+    if (Boolean(options.ignore) && !Array.isArray(options.ignore)) {
+        throw new TypeError('`ignore` should be an Array');
     }
 
     // Trim list of ignored variables
