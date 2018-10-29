@@ -11,7 +11,7 @@ const expectedUnused = [
 
 const ignore = ['$ignored-variable'];
 
-console.log('Run integration tests...');
+console.log('Running integration tests...');
 
 const result = fusv.find('./', { ignore });
 
