@@ -10,7 +10,7 @@ A simple tool to check for unused Sass variables in a directory.
 ## Usage
 
 ```shell
-find-unused-sass-variables folder [, folder2...]
+find-unused-sass-variables folder [, folder2...] --ignore '$my-var,$my-second-var'
 # or
 fusv folder [, folder2...]
 ```
@@ -20,33 +20,28 @@ fusv folder [, folder2...]
 ```js
 const fusv = require('find-unused-sass-variables')
 // 'scss' is a folder
-const unused = fusv.find('scss')
+let unused = fusv.find('scss')
 // Array of unused variables
 console.log(unused.unused);
-// [ '$foo', '$bar', '$imunused' ]
+// ['$foo', '$bar', '$imunused']
 console.log(unused.total);
 // 3
+
+// ignoring variables
+const ignoredVars = ['$my-var', '$my-second-var']
+unused = fusv.find('scss', { ignore: ignoredVars })
 ```
 
-### find([dir])
+### find(dir, options)
 
 * `dir`: string
-* Returns an object with `unused` and `total`. `unused` has the array of unused variables and `total` their count.
+* `options`: optional options Object
 
-### Ignore variables
+Returns an object with `unused` and `total`. `unused` has the array of unused variables and `total` their count.
 
-```shell
-fusv folder --ignore '$my-var,$my-second-var'
-```
-Or
+#### options.ignore
 
-```js
-const fusv = require('find-unused-sass-variables')
-const ignoredVars = ['$my-var', '$my-second-var']
-  
-const unused = fusv.find('scss', { ignore: ignoredVars })
-```
-
+Array of strings of the variables to ignore, e.g. `['$my-var', '$my-second-var']`
 
 ## Notes
 
@@ -56,4 +51,4 @@ const unused = fusv.find('scss', { ignore: ignoredVars })
 
 ## License
 
-MIT
+[MIT](LICENSE)
