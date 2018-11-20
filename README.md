@@ -44,7 +44,7 @@ Or
 const fusv = require('find-unused-sass-variables')
 const ignoredVars = ['$my-var', '$my-second-var']
   
-const unused = fusv.find('scss', { ignoredVars })
+const unused = fusv.find('scss', { ignore: ignoredVars })
 ```
 
 
