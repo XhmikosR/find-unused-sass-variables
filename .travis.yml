@@ -1,6 +1,5 @@
-sudo: false
-
-dist: trusty
+git:
+  depth: 3
 
 language: node_js
 
@@ -11,6 +10,7 @@ node_js:
 
 cache:
   directories:
+    - "node_modules"
     - "$HOME/.npm"
 
 notifications:
