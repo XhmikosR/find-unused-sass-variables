@@ -1,6 +1,6 @@
 'use strict';
 
-const fusv = require('../index');
+const fusv = require('..');
 
 const expectedUnused = [
     '$white',
