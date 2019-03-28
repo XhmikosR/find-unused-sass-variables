@@ -1,6 +1,6 @@
 {
   "name": "find-unused-sass-variables",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A small tool to find unused Sass variables",
   "author": "XhmikosR <xhmikosr@gmail.com>",
   "contributors": [
