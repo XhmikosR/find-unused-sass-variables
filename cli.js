@@ -3,60 +3,56 @@
 'use strict';
 
 const path = require('path');
+const commander = require('commander');
 const chalk = require('chalk');
 const ora = require('ora');
+const { version } = require('./package.json');
 const fusv = require('.');
 
-// The first and second args are: path/to/node script.js
-// If an argument starts with --, exclude the argument and the next argument.
-const args = process.argv.slice(2)
-    .filter((arg, i, list) => !arg.startsWith('--') && (i === 0 || !list[i - 1].startsWith('--')));
-
-// Ignored variables, comma separated.
-const ignore = process.argv.slice(2)
-    .filter((arg, i, list) => i !== 0 && list[i - 1] === '--ignore')
-    .join(',')
-    .split(',');
-
 const { log } = console;
-let success = true;
 
 // Colors
-const errorClr = chalk.red.bold;
 const infoClr = chalk.cyan;
 const reset = chalk.default;
 
-if (args.length === 0) {
-    log(errorClr('Wrong arguments!'));
-    log('Usage: find-unused-sass-variables folder [, folder2...]');
-    process.exit(1);
-}
+function processFolders(args, spinner, ignore) {
+    return new Promise(resolve => {
+        args.forEach(arg => {
+            const dir = path.resolve(arg);
 
-log('Looking for unused variables');
-const spinner = ora('').start();
+            spinner.info(`Finding unused variables in "${infoClr.bold(dir)}"...`);
 
-args.forEach(arg => {
-    const dir = path.resolve(arg);
+            const unusedVars = fusv.find(dir, { ignore });
 
-    spinner.info(`Finding unused variables in "${infoClr.bold(dir)}"...`);
+            spinner.info(`${infoClr.bold(unusedVars.total)} total variables.`);
 
-    const unusedVars = fusv.find(dir, { ignore });
+            unusedVars.unused.forEach(unusedVar => {
+                spinner.warn(chalk.yellow(`Variable ${reset.bold(unusedVar)} is not being used!`));
+            });
 
-    spinner.info(`${infoClr.bold(unusedVars.total)} total variables.`);
-
-    unusedVars.unused.forEach(unusedVar => {
-        spinner.warn(chalk.yellow(`Variable ${reset.bold(unusedVar)} is not being used!`));
+            return resolve(unusedVars);
+        });
     });
-
-    if (unusedVars.unused.length > 0) {
-        success = false;
-    } else {
-        spinner.succeed('No unused variables found!');
-    }
-});
-
-spinner.stop();
-
-if (success === false) {
-    process.exit(1);
 }
+
+commander
+    .usage('[options] <folders...>')
+    .version(version, '-v, --version')
+    .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated')
+    .action(() => {
+        const args = commander.args.filter(arg => typeof arg === 'string');
+        const ignore = commander.ignore ? commander.ignore.split(',') : [];
+
+        if (args.length) {
+            log('Looking for unused variables');
+            const spinner = ora('').start();
+
+            processFolders(args, spinner, ignore)
+                .then(unusedVars => {
+                    if (unusedVars.unused.length === 0) {
+                        spinner.succeed('No unused variables found!');
+                    }
+                });
+        }
+    })
+    .parse(process.argv);
