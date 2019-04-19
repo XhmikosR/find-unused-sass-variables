@@ -53,6 +53,8 @@ commander
                         spinner.succeed('No unused variables found!');
                     }
                 });
+        } else {
+            commander.help();
         }
     })
     .parse(process.argv);
