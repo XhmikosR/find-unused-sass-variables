@@ -33,26 +33,28 @@ function processFolders(args, spinner, ignore) {
     });
 }
 
+function handleArgs() {
+    const args = commander.args.filter(arg => typeof arg === 'string');
+    const ignore = commander.ignore ? commander.ignore.split(',') : [];
+
+    if (args.length) {
+        console.log('Looking for unused variables');
+        const spinner = ora('').start();
+
+        processFolders(args, spinner, ignore)
+            .then(unusedVars => {
+                if (unusedVars.unused.length === 0) {
+                    spinner.succeed('No unused variables found!');
+                }
+            });
+    } else {
+        commander.help();
+    }
+}
+
 commander
     .usage('[options] <folders...>')
     .version(version, '-v, --version')
     .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated')
-    .action(() => {
-        const args = commander.args.filter(arg => typeof arg === 'string');
-        const ignore = commander.ignore ? commander.ignore.split(',') : [];
-
-        if (args.length) {
-            console.log('Looking for unused variables');
-            const spinner = ora('').start();
-
-            processFolders(args, spinner, ignore)
-                .then(unusedVars => {
-                    if (unusedVars.unused.length === 0) {
-                        spinner.succeed('No unused variables found!');
-                    }
-                });
-        } else {
-            commander.help();
-        }
-    })
+    .action(handleArgs)
     .parse(process.argv);
