@@ -9,8 +9,6 @@ const ora = require('ora');
 const { version } = require('./package.json');
 const fusv = require('.');
 
-const { log } = console;
-
 // Colors
 const infoClr = chalk.cyan;
 const reset = chalk.default;
@@ -44,7 +42,7 @@ commander
         const ignore = commander.ignore ? commander.ignore.split(',') : [];
 
         if (args.length) {
-            log('Looking for unused variables');
+            console.log('Looking for unused variables');
             const spinner = ora('').start();
 
             processFolders(args, spinner, ignore)
