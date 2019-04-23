@@ -15,6 +15,8 @@ const reset = chalk.default;
 
 function processFolders(args, spinner, ignore) {
     return new Promise(resolve => {
+        let unusedList = [];
+
         args.forEach(arg => {
             const dir = path.resolve(arg);
 
@@ -30,9 +32,11 @@ function processFolders(args, spinner, ignore) {
                 spinner.warn(`Variable ${reset.bold(unusedVar)} is not being used!`);
             });
 
+            unusedList = unusedList.concat(unusedVars.unused);
             spinner.start();
-            return resolve(unusedVars);
         });
+
+        return resolve(unusedList);
     });
 }
 
@@ -47,7 +51,7 @@ function handleArgs() {
         spinner.start();
         processFolders(args, spinner, ignore)
             .then(unusedVars => {
-                if (unusedVars.unused.length === 0) {
+                if (unusedVars.length === 0) {
                     spinner.succeed('No unused variables found!');
                 }
 
