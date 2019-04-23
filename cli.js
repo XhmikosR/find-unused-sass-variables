@@ -9,62 +9,55 @@ const ora = require('ora');
 const { version } = require('./package.json');
 const fusv = require('.');
 
-// Colors
-const infoClr = chalk.cyan;
-const reset = chalk.default;
-
-function processFolders(args, spinner, ignore) {
-    return new Promise(resolve => {
-        let unusedList = [];
-
-        args.forEach(arg => {
-            const dir = path.resolve(arg);
-
-            spinner.info(`Finding unused variables in "${infoClr.bold(dir)}"...`);
-            spinner.start();
-
-            const unusedVars = fusv.find(dir, { ignore });
-
-            spinner.info(`${infoClr.bold(unusedVars.total)} total variables.`);
-            spinner.start();
-
-            unusedVars.unused.forEach(unusedVar => {
-                spinner.warn(`Variable ${reset.bold(unusedVar)} is not being used!`);
-            });
-
-            unusedList = unusedList.concat(unusedVars.unused);
-            spinner.start();
-        });
-
-        return resolve(unusedList);
-    });
-}
-
-function handleArgs() {
-    const args = commander.args.filter(arg => typeof arg === 'string');
-    const ignore = commander.ignore ? commander.ignore.split(',') : [];
-
-    if (args.length) {
-        const spinner = ora('');
-
-        console.log('Looking for unused variables');
-        spinner.start();
-        processFolders(args, spinner, ignore)
-            .then(unusedVars => {
-                if (unusedVars.length === 0) {
-                    spinner.succeed('No unused variables found!');
-                }
-
-                spinner.stop();
-            });
-    } else {
-        commander.help();
-    }
-}
-
 commander
     .usage('[options] <folders...>')
     .version(version, '-v, --version')
     .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated')
-    .action(handleArgs)
     .parse(process.argv);
+
+// Colors
+const infoClr = chalk.cyan;
+const reset = chalk.default;
+
+function main(args) {
+    const ignore = commander.ignore ? commander.ignore.split(',') : [];
+    const spinner = ora('');
+
+    console.log('Looking for unused variables');
+    spinner.start();
+
+    let unusedList = [];
+
+    args.forEach(arg => {
+        const dir = path.resolve(arg);
+
+        spinner.info(`Finding unused variables in "${infoClr.bold(dir)}"...`);
+        spinner.start();
+
+        const unusedVars = fusv.find(dir, { ignore });
+
+        spinner.info(`${infoClr.bold(unusedVars.total)} total variables.`);
+        spinner.start();
+
+        unusedVars.unused.forEach(unusedVar => {
+            spinner.warn(`Variable ${reset.bold(unusedVar)} is not being used!`);
+        });
+
+        unusedList = unusedList.concat(unusedVars.unused);
+        spinner.start();
+    });
+
+    if (unusedList.length === 0) {
+        spinner.succeed('No unused variables found!');
+    }
+
+    spinner.stop();
+}
+
+const args = commander.args.filter(arg => typeof arg === 'string');
+
+if (args.length) {
+    main(args);
+} else {
+    commander.help();
+}
