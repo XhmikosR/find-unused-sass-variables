@@ -40,7 +40,7 @@ function main(args) {
         spinner.start();
 
         unusedVars.unused.forEach(unusedVar => {
-            spinner.warn(`Variable ${reset.bold(unusedVar)} is not being used!`);
+            spinner.fail(`Variable ${reset.bold(unusedVar)} is not being used!`);
         });
 
         unusedList = unusedList.concat(unusedVars.unused);
@@ -52,6 +52,8 @@ function main(args) {
     }
 
     spinner.stop();
+
+    process.exit(unusedList.length);
 }
 
 const args = commander.args.filter(arg => typeof arg === 'string');
