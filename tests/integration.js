@@ -19,6 +19,7 @@ if (result.total === expectedUnused.length) {
     console.info(`All tests passed (${result.total})`);
     process.exit(0);
 } else {
-    console.error(`Expected ${expectedUnused.length} and got ${result.total}`);
+    console.error(`Expected ${expectedUnused.length} and got ${result.unused.length}`);
+    console.warn(`Expected ${result.unused.join(', ')} to equal ${expectedUnused.join(', ')}`);
     process.exit(1);
 }
