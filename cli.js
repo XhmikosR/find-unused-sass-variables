@@ -36,14 +36,14 @@ function main(args) {
 
         const unusedVars = fusv.find(dir, { ignore });
 
-        spinner.info(`${infoClr.bold(unusedVars.total)} total variables.`);
+        spinner.info(`${infoClr.bold(unusedVars.length)} total variables.`);
         spinner.start();
 
-        unusedVars.unused.forEach(unusedVar => {
+        unusedVars.forEach(unusedVar => {
             spinner.fail(`Variable ${reset.bold(unusedVar)} is not being used!`);
         });
 
-        unusedList = unusedList.concat(unusedVars.unused);
+        unusedList = unusedList.concat(unusedVars);
         spinner.start();
     });
 

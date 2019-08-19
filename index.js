@@ -57,10 +57,7 @@ function findUnusedVars(strDir, opts) {
         return sassFilesString.match(re).length === 1;
     });
 
-    return {
-        unused: unusedVars,
-        total: variables.length
-    };
+    return unusedVars;
 }
 
 module.exports = {

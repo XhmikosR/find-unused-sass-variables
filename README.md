@@ -10,7 +10,7 @@ A simple tool to check for unused Sass variables in a directory.
 ## Usage
 
 ```shell
-find-unused-sass-variables folder [, folder2...] --ignore '$my-var,$my-second-var'
+find-unused-sass-variables folder [, folder2...] --ignore "$my-var,$my-second-var"
 # or
 fusv folder [, folder2...]
 ```
@@ -22,9 +22,9 @@ const fusv = require('find-unused-sass-variables')
 // 'scss' is a folder
 let unused = fusv.find('scss')
 // Array of unused variables
-console.log(unused.unused);
+console.log(unused);
 // ['$foo', '$bar', '$imunused']
-console.log(unused.total);
+console.log(unused.length);
 // 3
 
 // ignoring variables
@@ -37,7 +37,7 @@ unused = fusv.find('scss', { ignore: ignoredVars })
 * `dir`: string
 * `options`: optional options Object
 
-Returns an object with `unused` and `total`. `unused` has the array of unused variables and `total` their count.
+Returns an Array of the unused variables.
 
 #### options.ignore
 
