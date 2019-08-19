@@ -3,10 +3,10 @@
 const fusv = require('..');
 
 const expectedUnused = [
-    '$white',
     '$a',
     '$b',
-    '$unused'
+    '$unused',
+    '$black'
 ];
 
 const ignore = ['$ignored-variable'];
@@ -19,6 +19,6 @@ if (result.total === expectedUnused.length) {
     console.info(`All tests passed (${result.total})`);
     process.exit(0);
 } else {
-    console.error(`Expect ${expectedUnused.length} and got ${result.total}`);
+    console.error(`Expected ${expectedUnused.length} and got ${result.total}`);
     process.exit(1);
 }

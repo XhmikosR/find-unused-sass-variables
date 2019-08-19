@@ -1,5 +1,13 @@
-$white: #fff !default;
+// unused variables
 $a: 10px;
 $b : 20px;
 $unused    : #000;
+$black: #000;
+
+// used ones
+$white: #fff !default;
+$black-light: #111;
+$black-lightest: #222;
+
+// ignored
 $ignored-variable: #ace;

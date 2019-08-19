@@ -3,6 +3,14 @@
 
 @charset "utf-8";
 
-.test {
-    background-color: #fff;
+.white {
+    background-color: $white;
+}
+
+.black-light {
+    background-color: $black-light;
+}
+
+.black-lightest {
+    background-color: $black-lightest;
 }
