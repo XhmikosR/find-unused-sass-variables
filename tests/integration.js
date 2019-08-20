@@ -15,8 +15,8 @@ console.log('Running integration tests...');
 
 const result = fusv.find('./', { ignore });
 
-if (result.total === expectedUnused.length) {
-    console.info(`All tests passed (${result.total})`);
+if (result.unused.length === expectedUnused.length) {
+    console.info('Tests passed!');
     process.exit(0);
 } else {
     console.error(`Expected ${expectedUnused.length} and got ${result.unused.length}`);
