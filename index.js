@@ -52,7 +52,7 @@ function findUnusedVars(strDir, opts) {
 
     // Store unused vars from all files and loop through each variable
     const unusedVars = variables.filter(variable => {
-        const re = new RegExp(regExpQuote(variable), 'g');
+        const re = new RegExp(`(${regExpQuote(variable)})\\b(?!-)`, 'g');
 
         return sassFilesString.match(re).length === 1;
     });
