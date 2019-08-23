@@ -20,6 +20,7 @@ if (result.unused.length === expectedUnused.length) {
     process.exit(0);
 } else {
     console.error(`Expected ${expectedUnused.length} and got ${result.unused.length}`);
-    console.warn(`Expected ${result.unused.join(', ')} to equal ${expectedUnused.join(', ')}`);
+    console.warn(`Expected ${expectedUnused.join(', ')}`);
+    console.warn(`Got ${result.unused.join(', ')}`);
     process.exit(1);
 }
