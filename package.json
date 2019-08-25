@@ -31,7 +31,6 @@
     "commander": "^2.20.0",
     "glob": "^7.1.4",
     "ora": "^3.4.0",
-    "postcss": "^7.0.17",
     "postcss-scss": "^2.0.0"
   },
   "devDependencies": {
