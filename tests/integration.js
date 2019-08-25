@@ -6,7 +6,9 @@ const expectedUnused = [
     '$a',
     '$b',
     '$unused',
-    '$black'
+    '$black',
+    '$nestedVar',
+    '$nestNestedVar'
 ];
 
 const ignore = ['$ignored-variable'];
