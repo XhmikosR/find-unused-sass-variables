@@ -49,11 +49,12 @@ function main(args) {
 
     if (unusedList.length === 0) {
         spinner.succeed('No unused variables found!');
+        spinner.stop();
+        process.exit(0);
     }
 
     spinner.stop();
-
-    process.exit(unusedList.length);
+    process.exit(1);
 }
 
 const args = commander.args.filter(arg => typeof arg === 'string');
