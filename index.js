@@ -3,8 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
-const { parse: scssParser } = require('postcss-scss');
-const Declaration = require('postcss/lib/declaration');
+const parse = require('./lib/parse-variable');
 
 const defaultOptions = {
     ignore: []
@@ -44,11 +43,7 @@ function findUnusedVars(strDir, opts) {
         sassFilesString = sassFilesString.replace(/---/g, '');
     }
 
-    const parsedScss = scssParser(sassFilesString);
-    const variables = parsedScss.nodes
-        .filter(node => node instanceof Declaration)
-        .map(declaration => declaration.prop)
-        .filter(variable => !options.ignore.includes(variable));
+    const variables = parse(sassFilesString, options.ignore);
 
     // Store unused vars from all files and loop through each variable
     const unusedVars = variables.filter(variable => {

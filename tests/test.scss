@@ -4,7 +4,15 @@
 @charset "utf-8";
 
 .white {
+    $nestedVar: red;
+
     background-color: $white;
+
+    a {
+        $nestNestedVar: blue;
+
+        color: $black-light;
+    }
 }
 
 .black-light {
