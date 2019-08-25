@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
-const scssParser = require('postcss-scss/lib/scss-parse');
+const { parse: scssParser } = require('postcss-scss');
 const Declaration = require('postcss/lib/declaration');
 
 const defaultOptions = {
