@@ -1,7 +1,7 @@
 # find-unused-sass-variables
 
 [![NPM version](https://img.shields.io/npm/v/find-unused-sass-variables.svg)](https://www.npmjs.com/package/find-unused-sass-variables)
-[![Build Status](https://img.shields.io/travis/XhmikosR/find-unused-sass-variables/master.svg)](https://travis-ci.org/XhmikosR/find-unused-sass-variables)
+![Build Status](https://action-badges.now.sh/XhmikosR/find-unused-sass-variables)
 [![Dependency Status](https://img.shields.io/david/XhmikosR/find-unused-sass-variables.svg)](https://david-dm.org/XhmikosR/find-unused-sass-variables)
 [![devDependency Status](https://img.shields.io/david/dev/XhmikosR/find-unused-sass-variables.svg)](https://david-dm.org/XhmikosR/find-unused-sass-variables#info=devDependencies)
 
