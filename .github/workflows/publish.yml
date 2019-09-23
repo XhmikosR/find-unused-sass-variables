@@ -1,0 +1,26 @@
+name: Publish
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v1
+
+      - name: Set Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10"
+          registry-url: "https://registry.npmjs.org/"
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Publish on npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: "${{ secrets.NPM_AUTH_TOKEN }}"
