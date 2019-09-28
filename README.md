@@ -50,6 +50,20 @@ Returns an object with `unused` and `total`. `unused` has the array of unused va
 
 Array of strings of the variables to ignore, e.g. `['$my-var', '$my-second-var']`
 
+## Disable & enable
+
+Disable or enable `fusv` with the `fusv-disable` and `fusv-enable` comments:
+
+```scss
+$used-variable-1: #666;
+
+// fusv-disable
+$unused-variable: #coffee;
+// fusv-enable
+
+$used-variable-2: #ace;
+```
+
 ## Notes
 
 * The tool's logic is pretty "dumb"; if you use the same name for a variable in different files or namespaces,
