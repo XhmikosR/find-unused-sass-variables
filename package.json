@@ -28,14 +28,14 @@
   "homepage": "https://github.com/XhmikosR/find-unused-sass-variables#readme",
   "dependencies": {
     "chalk": "^2.4.2",
-    "commander": "^2.20.1",
+    "commander": "^3.0.2",
     "glob": "^7.1.4",
-    "ora": "^3.4.0",
+    "ora": "^4.0.2",
     "postcss": "^7.0.18",
     "postcss-scss": "^2.0.0"
   },
   "devDependencies": {
-    "eslint": "^5.16.0"
+    "eslint": "^6.5.1"
   },
   "files": [
     "cli.js",
@@ -43,7 +43,7 @@
     "lib/parse-variable.js"
   ],
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "keywords": [
     "sass",
