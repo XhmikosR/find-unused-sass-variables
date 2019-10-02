@@ -27,10 +27,14 @@ jobs:
       - name: Install npm dependencies (npm i)
         run: npm install
         if: matrix.node < 8
+        env:
+          CI: true
 
       - name: Install npm dependencies (npm ci)
         run: npm ci
         if: matrix.node >= 8
+        env:
+          CI: true
 
       - name: Run tests
         run: npm test
