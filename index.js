@@ -3,16 +3,12 @@
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
+const escapeRegex = require('escape-string-regexp');
 const parse = require('./lib/parse-variable');
 
 const defaultOptions = {
     ignore: []
 };
-
-// Blame TC39... https://github.com/benjamingr/RegExp.escape/issues/37
-function regExpQuote(str) {
-    return str.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
-}
 
 function findUnusedVars(strDir, opts) {
     const options = Object.assign(defaultOptions, opts);
@@ -47,7 +43,7 @@ function findUnusedVars(strDir, opts) {
 
     // Store unused vars from all files and loop through each variable
     const unusedVars = variables.filter(variable => {
-        const re = new RegExp(`(${regExpQuote(variable)})\\b(?!-)`, 'g');
+        const re = new RegExp(`(${escapeRegex(variable)})\\b(?!-)`, 'g');
 
         return sassFilesString.match(re).length === 1;
     });
