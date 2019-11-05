@@ -32,11 +32,11 @@
     "escape-string-regexp": "^2.0.0",
     "glob": "^7.1.5",
     "ora": "^4.0.2",
-    "postcss": "^7.0.18",
+    "postcss": "^7.0.21",
     "postcss-scss": "^2.0.0"
   },
   "devDependencies": {
-    "eslint": "^6.5.1"
+    "eslint": "^6.6.0"
   },
   "files": [
     "cli.js",
