@@ -13,10 +13,10 @@
     "fusv": "./cli.js"
   },
   "scripts": {
-    "eslint": "eslint .",
-    "lint": "npm run eslint",
-    "test": "npm run eslint && npm run test:integration",
-    "test:integration": "node tests/integration.js"
+    "lint": "npm run xo",
+    "test": "npm run xo && npm run test:integration",
+    "test:integration": "node tests/integration.js",
+    "xo": "xo"
   },
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
     "postcss-scss": "^2.0.0"
   },
   "devDependencies": {
-    "eslint": "^6.6.0"
+    "xo": "^0.25.3"
   },
   "files": [
     "cli.js",
@@ -51,5 +51,19 @@
     "unused",
     "variables",
     "scss"
-  ]
+  ],
+  "xo": {
+    "space": 4,
+    "rules": {
+      "capitalized-comments": "off",
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ],
+      "space-before-function-paren": [
+        "error",
+        "never"
+      ]
+    }
+  }
 }

@@ -59,7 +59,7 @@ function main(args) {
 
 const args = commander.args.filter(arg => typeof arg === 'string');
 
-if (args.length) {
+if (args.length > 0) {
     main(args);
 } else {
     commander.help();
