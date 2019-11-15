@@ -28,10 +28,10 @@
   "homepage": "https://github.com/XhmikosR/find-unused-sass-variables#readme",
   "dependencies": {
     "chalk": "^3.0.0",
-    "commander": "^4.0.0",
+    "commander": "^4.0.1",
     "escape-string-regexp": "^2.0.0",
     "glob": "^7.1.6",
-    "ora": "^4.0.2",
+    "ora": "^4.0.3",
     "postcss": "^7.0.21",
     "postcss-scss": "^2.0.0"
   },
