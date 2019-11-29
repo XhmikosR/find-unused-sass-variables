@@ -17,7 +17,7 @@ commander
 
 // Colors
 const infoClr = chalk.cyan;
-const reset = chalk.default;
+const reset = chalk;
 
 function main(args) {
     const ignore = commander.ignore ? commander.ignore.split(',') : [];
