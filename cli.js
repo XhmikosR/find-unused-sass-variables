@@ -15,10 +15,6 @@ commander
     .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated')
     .parse(process.argv);
 
-// Colors
-const infoClr = chalk.cyan;
-const reset = chalk;
-
 function main(args) {
     const ignore = commander.ignore ? commander.ignore.split(',') : [];
     const spinner = ora('');
@@ -31,16 +27,16 @@ function main(args) {
     args.forEach(arg => {
         const dir = path.resolve(arg);
 
-        spinner.info(`Finding unused variables in "${infoClr.bold(dir)}"...`);
+        spinner.info(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
         spinner.start();
 
         const unusedVars = fusv.find(dir, { ignore });
 
-        spinner.info(`${infoClr.bold(unusedVars.total)} total variables.`);
+        spinner.info(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
         spinner.start();
 
         unusedVars.unused.forEach(unusedVar => {
-            spinner.fail(`Variable ${reset.bold(unusedVar)} is not being used!`);
+            spinner.fail(`Variable ${chalk.bold(unusedVar)} is not being used!`);
         });
 
         unusedList = unusedList.concat(unusedVars.unused);
