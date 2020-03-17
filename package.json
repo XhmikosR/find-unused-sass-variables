@@ -64,7 +64,9 @@
       "space-before-function-paren": [
         "error",
         "never"
-      ]
+      ],
+      "unicorn/prevent-abbreviations": "off",
+      "unicorn/string-content": "off"
     }
   }
 }
