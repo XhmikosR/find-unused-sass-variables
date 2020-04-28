@@ -65,8 +65,7 @@
         "error",
         "never"
       ],
-      "unicorn/prevent-abbreviations": "off",
-      "unicorn/string-content": "off"
+      "unicorn/prevent-abbreviations": "off"
     }
   }
 }
