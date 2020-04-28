@@ -30,7 +30,7 @@
   "dependencies": {
     "chalk": "^4.0.0",
     "commander": "^5.1.0",
-    "escape-string-regexp": "^3.0.0",
+    "escape-string-regexp": "^4.0.0",
     "glob": "^7.1.6",
     "ora": "^4.0.4",
     "postcss": "^7.0.27",
