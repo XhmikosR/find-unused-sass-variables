@@ -30,6 +30,7 @@ function main(args) {
         spinner.info(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
         spinner.start();
 
+        // eslint-disable-next-line unicorn/no-fn-reference-in-iterator
         const unusedVars = fusv.find(dir, { ignore });
 
         spinner.info(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
