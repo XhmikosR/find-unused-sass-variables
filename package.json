@@ -65,6 +65,7 @@
         "error",
         "never"
       ],
+      "unicorn/no-reduce": "off",
       "unicorn/prevent-abbreviations": "off"
     }
   }
