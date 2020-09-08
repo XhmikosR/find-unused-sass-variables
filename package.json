@@ -32,7 +32,7 @@
     "commander": "^5.1.0",
     "escape-string-regexp": "^4.0.0",
     "glob": "^7.1.6",
-    "ora": "^4.0.5",
+    "ora": "^5.1.0",
     "postcss": "^7.0.32",
     "postcss-scss": "^2.1.1"
   },
