@@ -33,8 +33,8 @@
     "escape-string-regexp": "^4.0.0",
     "glob": "^7.1.6",
     "ora": "^5.1.0",
-    "postcss": "^7.0.32",
-    "postcss-scss": "^2.1.1"
+    "postcss": "^8.1.1",
+    "postcss-scss": "^3.0.2"
   },
   "devDependencies": {
     "xo": "^0.33.1"
