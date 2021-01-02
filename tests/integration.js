@@ -16,7 +16,10 @@ const ignore = ['$ignored-variable'];
 
 console.log('Running integration tests...');
 
-const result = fusv.find('./', { ignore });
+const result = fusv.find('./tests/main', { ignore });
+
+// For combine with other folder like node_modules ect..
+// const result = fusv.find(['./tests/main','./tests/other'], { ignore });
 
 if (result.unused.length === expectedUnused.length) {
     console.info('Tests passed!');
