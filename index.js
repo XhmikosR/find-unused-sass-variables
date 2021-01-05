@@ -7,27 +7,32 @@ const escapeRegex = require('escape-string-regexp');
 const parse = require('./lib/parse-variable');
 
 const defaultOptions = {
-    ignore: []
+    ignore: [],
+    combine: false
 };
 
 function findUnusedVars(strDir, opts) {
     const options = Object.assign(defaultOptions, opts);
-    const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
+
+    // Trim list of ignored variables
+    options.ignore = options.ignore.map(val => val.trim());
 
     if (Boolean(options.ignore) && !Array.isArray(options.ignore)) {
         throw new TypeError('`ignore` should be an Array');
     }
 
-    // Trim list of ignored variables
-    options.ignore = options.ignore.map(val => val.trim());
-
-    if (!(fs.existsSync(dir) && fs.statSync(dir).isDirectory())) {
-        throw new Error(`"${dir}": Not a valid directory!`);
+    let sassFiles;
+    if (options.combine === true) {
+        const sassFile = [];
+        strDir.forEach((strPath, i) => {
+            sassFile[i] = getPath(strPath);
+            sassFiles = [].concat(...sassFile);
+        });
+    } else {
+        sassFiles = getPath(strDir);
     }
 
     // Array of all Sass files
-    const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
-
     // String of all Sass files' content
     let sassFilesString = sassFiles.reduce((sassStr, file) => {
         sassStr += fs.readFileSync(file, 'utf8');
@@ -52,6 +57,16 @@ function findUnusedVars(strDir, opts) {
         unused: unusedVars,
         total: variables.length
     };
+}
+
+function getPath(strPath) {
+    const dir = path.isAbsolute(strPath) ? strPath : path.resolve(strPath);
+
+    if (!(fs.existsSync(dir) && fs.statSync(dir).isDirectory())) {
+        throw new Error(`"${dir}": Not a valid directory!`);
+    }
+
+    return glob.sync(path.join(dir, '**/*.scss'));
 }
 
 module.exports = {
