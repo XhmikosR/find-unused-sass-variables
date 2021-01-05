@@ -5,7 +5,6 @@
 const path = require('path');
 const commander = require('commander');
 const chalk = require('chalk');
-const ora = require('ora');
 const { version } = require('./package.json');
 const fusv = require('.');
 
@@ -17,40 +16,33 @@ commander
 
 function main(args) {
     const ignore = commander.ignore ? commander.ignore.split(',') : [];
-    const spinner = ora('');
 
     console.log('Looking for unused variables');
-    spinner.start();
 
     let unusedList = [];
 
     args.forEach(arg => {
         const dir = path.resolve(arg);
 
-        spinner.info(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
-        spinner.start();
+        console.log(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
 
         // eslint-disable-next-line unicorn/no-array-callback-reference
         const unusedVars = fusv.find(dir, { ignore });
 
-        spinner.info(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
-        spinner.start();
+        console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
 
         unusedVars.unused.forEach(unusedVar => {
-            spinner.fail(`Variable ${chalk.bold(unusedVar)} is not being used!`);
+            console.log(`Variable ${chalk.bold(unusedVar)} is not being used!`);
         });
 
         unusedList = unusedList.concat(unusedVars.unused);
-        spinner.start();
     });
 
     if (unusedList.length === 0) {
-        spinner.succeed('No unused variables found!');
-        spinner.stop();
+        console.log('No unused variables found!');
         process.exit(0);
     }
 
-    spinner.stop();
     process.exit(1);
 }
 
