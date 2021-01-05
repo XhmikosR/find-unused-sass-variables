@@ -37,7 +37,7 @@
     "postcss-scss": "^3.0.4"
   },
   "devDependencies": {
-    "xo": "^0.36.1"
+    "xo": "^0.37.1"
   },
   "files": [
     "cli.js",
