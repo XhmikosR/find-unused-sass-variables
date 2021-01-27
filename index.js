@@ -10,6 +10,84 @@ const defaultOptions = {
     ignore: []
 };
 
+function getLineCountOfSassFile(sassFileString) {
+    let lineCount = 0;
+    const parsedScss = sassFileString;
+    for (let i = 0, n = parsedScss.length; i < n; ++i) {
+        if (parsedScss[i] === '\n') {
+            ++lineCount;
+        }
+    }
+
+    return lineCount;
+}
+
+function getFileStringConcatenationAndLineInfo(sassFiles) {
+    const varLineInfoInAllFiles = [];
+    const currentDirectory = process.cwd();
+    let lineCountCumulated = 0;
+    const sassFilesString = sassFiles.reduce((sassStrCat, file) => {
+        const sassStr = fs.readFileSync(file, 'utf8');
+        const sassStrLineCount = getLineCountOfSassFile(sassStr);
+        sassStrCat += sassStr;
+        lineCountCumulated += sassStrLineCount;
+        const fileRelativePath = path.relative(currentDirectory, file);
+        varLineInfoInAllFiles.push({
+            file: fileRelativePath,
+            lineCountCumulated
+        });
+        return sassStrCat;
+    }, '');
+
+    return {
+        varLineInfoInAllFiles,
+        sassFilesString
+    };
+}
+
+function removeJekyllComments(sassFileString) {
+    // Remove jekyll comments
+    if (sassFileString.includes('---')) {
+        sassFileString = sassFileString.replace(/---/g, '');
+    }
+
+    return sassFileString;
+}
+
+function filterVariableInfoWithSingleOccurence(variables, sassFilesString) {
+    const unusedVarsInfo = variables.filter(variableInfo => {
+        const variableName = variableInfo.name;
+        const re = new RegExp(`(${escapeRegex(variableName)})\\b(?!-)`, 'g');
+
+        return sassFilesString.match(re).length === 1;
+    });
+
+    return unusedVarsInfo;
+}
+
+function getVariableLinePerContainingFile(unusedVarsInfo, varLineInfoInAllFiles) {
+    for (
+        let i = 0, j = 0, linesChecked = 0,
+            { lineCountCumulated } = varLineInfoInAllFiles[j],
+            lineInOwnFile = 0;
+        i < unusedVarsInfo.length && j < varLineInfoInAllFiles.length;
+        ++i
+    ) {
+        const varLineInAllFiles = unusedVarsInfo[i].lineInAllFiles;
+        if (varLineInAllFiles > lineCountCumulated) {
+            linesChecked = lineCountCumulated;
+            lineCountCumulated = varLineInfoInAllFiles[++j].lineCountCumulated;
+        }
+
+        lineInOwnFile = varLineInAllFiles - linesChecked;
+        unusedVarsInfo[i].lineInOwnFile = lineInOwnFile;
+        unusedVarsInfo[i].file = varLineInfoInAllFiles[j].file;
+        delete unusedVarsInfo[i].lineInAllFiles;
+    }
+
+    return unusedVarsInfo;
+}
+
 function findUnusedVars(strDir, opts) {
     const options = Object.assign(defaultOptions, opts);
     const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
@@ -28,29 +106,22 @@ function findUnusedVars(strDir, opts) {
     // Array of all Sass files
     const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
 
-    // String of all Sass files' content
-    let sassFilesString = sassFiles.reduce((sassStr, file) => {
-        sassStr += fs.readFileSync(file, 'utf8');
-        return sassStr;
-    }, '');
+    let {
+        varLineInfoInAllFiles,
+        sassFilesString
+    } = getFileStringConcatenationAndLineInfo(sassFiles);
 
-    // Remove jekyll comments
-    if (sassFilesString.includes('---')) {
-        sassFilesString = sassFilesString.replace(/---/g, '');
-    }
+    sassFilesString = removeJekyllComments(sassFilesString);
 
-    const variables = parse(sassFilesString, options.ignore);
+    const variablesInfo = parse(sassFilesString, options.ignore);
 
-    // Store unused vars from all files and loop through each variable
-    const unusedVars = variables.filter(variable => {
-        const re = new RegExp(`(${escapeRegex(variable)})\\b(?!-)`, 'g');
+    let unusedVarsInfo = filterVariableInfoWithSingleOccurence(variablesInfo, sassFilesString);
 
-        return sassFilesString.match(re).length === 1;
-    });
+    unusedVarsInfo = getVariableLinePerContainingFile(unusedVarsInfo, varLineInfoInAllFiles);
 
     return {
-        unused: unusedVars,
-        total: variables.length
+        unused: unusedVarsInfo,
+        total: unusedVarsInfo.length
     };
 }
 

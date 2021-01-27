@@ -9,7 +9,11 @@ const expectedUnused = [
     '$black',
     '$nestedVar',
     '$nestNestedVar',
-    '$enabled-variable'
+    '$enabled-variable',
+    '$c',
+    '$d',
+    '$e',
+    '$f'
 ];
 
 const ignore = ['$ignored-variable'];
@@ -17,6 +21,8 @@ const ignore = ['$ignored-variable'];
 console.log('Running integration tests...');
 
 const result = fusv.find('./', { ignore });
+
+console.log(result);
 
 if (result.unused.length === expectedUnused.length) {
     console.info('Tests passed!');

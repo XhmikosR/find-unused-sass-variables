@@ -27,15 +27,21 @@ function main(args) {
         console.log(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
 
         // eslint-disable-next-line unicorn/no-array-callback-reference
-        const unusedVars = fusv.find(dir, { ignore });
+        const unusedVarsInfo = fusv.find(dir, { ignore });
 
-        console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
+        console.log(`${chalk.cyan.bold(unusedVarsInfo.total)} total variables.`);
 
-        unusedVars.unused.forEach(unusedVar => {
-            console.log(`Variable ${chalk.bold(unusedVar)} is not being used!`);
+        let currentFile = '';
+        unusedVarsInfo.unused.forEach(unusedVarInfo => {
+            if (currentFile !== unusedVarInfo.file) {
+                currentFile = unusedVarInfo.file;
+                console.log('\n\u001B[4m' + currentFile + '\u001B[0m');
+            }
+
+            console.log(` ${unusedVarInfo.lineInOwnFile}:${unusedVarInfo.column}\tVariable ${chalk.bold(unusedVarInfo.name)} is not being used!`);
         });
 
-        unusedList = unusedList.concat(unusedVars.unused);
+        unusedList = unusedList.concat(unusedVarsInfo.unused);
     });
 
     if (unusedList.length === 0) {
