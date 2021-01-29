@@ -39,17 +39,35 @@ function findUnusedVars(strDir, opts) {
         sassFilesString = sassFilesString.replace(/---/g, '');
     }
 
-    const variables = parse(sassFilesString, options.ignore);
+    let variables = [];
+    const sassVarInfo = [];
+    let strSass = '';
+    sassFiles.forEach((file, i) => {
+        strSass = fs.readFileSync(file, 'utf8');
+        if (strSass.includes('---')) {
+            strSass = strSass.replace(/---/g, '');
+        }
+
+        sassVarInfo[i] = parse(strSass, options.ignore);
+        variables = [].concat(...sassVarInfo);
+        variables.forEach(sassVar => {
+            if (sassVar.filePath === '') {
+                sassVar.filePath = file;
+            }
+        });
+    });
 
     // Store unused vars from all files and loop through each variable
     const unusedVars = variables.filter(variable => {
-        const re = new RegExp(`(${escapeRegex(variable)})\\b(?!-)`, 'g');
+        const re = new RegExp(`(${escapeRegex(variable.name)})\\b(?!-)`, 'g');
 
         return sassFilesString.match(re).length === 1;
     });
 
     return {
-        unused: unusedVars,
+        unused: unusedVars.map(({ name }) => name),
+        unusedInfo: unusedVars,
+        unusedTotal: unusedVars.map(({ name }) => name).length,
         total: variables.length
     };
 }
