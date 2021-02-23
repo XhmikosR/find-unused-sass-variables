@@ -35,6 +35,7 @@ function main(args) {
             console.log(`Variable ${chalk.bold(unusedVar)} is not being used!`);
         });
 
+        // eslint-disable-next-line unicorn/prefer-spread
         unusedList = unusedList.concat(unusedVars.unused);
     });
 
