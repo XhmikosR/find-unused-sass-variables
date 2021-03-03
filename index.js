@@ -28,29 +28,40 @@ function findUnusedVars(strDir, opts) {
     // Array of all Sass files
     const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
 
-    // String of all Sass files' content
-    let sassFilesString = sassFiles.reduce((sassStr, file) => {
-        sassStr += fs.readFileSync(file, 'utf8');
-        return sassStr;
-    }, '');
+    // Build sassFilesString as concatenation of all sassFiles
+    // Get all variables and their origin information
+    let variables = [];
+    const sassVarInfo = [];
+    let strSass = '';
+    let sassFilesString = '';
+    sassFiles.forEach((file, i) => {
+        strSass = fs.readFileSync(file, 'utf8');
 
-    // Remove jekyll comments
-    if (sassFilesString.includes('---')) {
-        sassFilesString = sassFilesString.replace(/---/g, '');
-    }
+        // remove jekyl comments
+        if (strSass.includes('---')) {
+            strSass = strSass.replace(/---/g, '');
+        }
 
-    const variables = parse(sassFilesString, options.ignore);
+        sassVarInfo[i] = parse(strSass, options.ignore, file);
 
-    // Store unused vars from all files and loop through each variable
+        // eslint-disable-next-line unicorn/prefer-spread
+        variables = [].concat(...sassVarInfo);
+        sassFilesString += strSass;
+    });
+
+    // Get unused variables by filtering single occuring variables in in sassFilesString
     const unusedVars = variables.filter(variable => {
-        const re = new RegExp(`(${escapeRegex(variable)})\\b(?!-)`, 'g');
+        const re = new RegExp(`(${escapeRegex(variable.name)})\\b(?!-)`, 'g');
 
         return sassFilesString.match(re).length === 1;
     });
 
+    // Unused and total for backwards compatibility
     return {
-        unused: unusedVars,
-        total: variables.length
+        totalUnusedVars: unusedVars.map(({ name }) => name).length,
+        total: variables.length,
+        unusedInfo: unusedVars,
+        unused: unusedVars.map(({ name }) => name)
     };
 }
 

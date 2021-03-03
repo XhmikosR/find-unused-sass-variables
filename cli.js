@@ -30,13 +30,25 @@ function main(args) {
         const unusedVars = fusv.find(dir, { ignore });
 
         console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
+        console.log(`${chalk.cyan.bold(unusedVars.totalUnusedVars)} total unused variables.`);
 
-        unusedVars.unused.forEach(unusedVar => {
-            console.log(`Variable ${chalk.bold(unusedVar)} is not being used!`);
+        let currentFile = '';
+        const currentDirectory = process.cwd();
+        unusedVars.unusedInfo.forEach(unusedVar => {
+            if (currentFile !== unusedVar.file) {
+                currentFile = unusedVar.file;
+                const fileRelativePath = path.relative(currentDirectory, currentFile);
+                console.log(`\n${chalk.underline(fileRelativePath)}`);
+            }
+
+            console.log(
+                ` ${unusedVar.line}:${unusedVar.column}\t` +
+                `Variable ${chalk.bold(unusedVar.name)} is not being used!`
+            );
         });
 
         // eslint-disable-next-line unicorn/prefer-spread
-        unusedList = unusedList.concat(unusedVars.unused);
+        unusedList = unusedList.concat(unusedVars.unusedInfo);
     });
 
     if (unusedList.length === 0) {
