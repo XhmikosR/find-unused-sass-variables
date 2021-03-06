@@ -26,6 +26,8 @@ function findUnusedVars(strDir, opts) {
         const sassFile = [];
         strDir.forEach((strPath, i) => {
             sassFile[i] = getPath(strPath);
+            
+            // eslint-disable-next-line unicorn/prefer-spread
             sassFiles = [].concat(...sassFile);
         });
     } else {
