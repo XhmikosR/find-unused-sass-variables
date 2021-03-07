@@ -1,39 +1,56 @@
 'use strict';
 
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
+const { promisify } = require('util');
 const glob = require('glob');
 const escapeRegex = require('escape-string-regexp');
 const parse = require('./lib/parse-variable');
+
+const globP = promisify(glob);
 
 const defaultOptions = {
     ignore: []
 };
 
-const findUnusedVars = (strDir, opts) => {
+const findUnusedVars = async(strDir, opts) => {
     const options = parseOptions(opts);
-    const dir = parseDir(strDir);
-
+    const dir = await parseDir(strDir);
     // Array of all Sass files
-    const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
+    const sassFiles = await globP(path.join(dir, '**/*.scss'));
 
+    const executions = sassFiles.map(file => parseFile(file, options));
     // String of all Sass files' content
-    const sassFilesString = sassFiles.reduce((sassStr, file) => {
-        sassStr += fs.readFileSync(file, 'utf8');
-        return sassStr;
-    }, '');
+    const sassFilesAsStrings = await Promise.all(executions);
 
-    return parseVariables(sassFilesString, options);
-};
+    let variables = [];
+    let combinedSassFile = '';
 
-const parseVariables = (sassFilesString, options) => {
-    // Remove jekyll comments
-    if (sassFilesString.includes('---')) {
-        sassFilesString = sassFilesString.replace(/---/g, '');
+    for (const result of sassFilesAsStrings) {
+        variables = [...variables, ...result.variables];
+        combinedSassFile += result.sassFileString;
     }
 
-    const variables = parse(sassFilesString, options.ignore);
+    return filterVariables(combinedSassFile, variables);
+};
 
+const parseFile = async(file, options) => {
+    let sassFileString = await fs.readFile(file, 'utf8');
+
+    // Remove jekyll comments
+    if (sassFileString.includes('---')) {
+        sassFileString = sassFileString.replace(/---/g, '');
+    }
+
+    const variables = parse(sassFileString, options.ignore);
+
+    return {
+        sassFileString,
+        variables
+    };
+};
+
+const filterVariables = (sassFilesString, variables) => {
     // Store unused vars from all files and loop through each variable
     const unusedVars = variables.filter(variable => {
         const re = new RegExp(`(${escapeRegex(variable)})\\b(?!-)`, 'g');
@@ -60,10 +77,11 @@ const parseOptions = opts => {
     return options;
 };
 
-const parseDir = strDir => {
+const parseDir = async strDir => {
     const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
+    const stat = await fs.lstat(dir);
 
-    if (!(fs.existsSync(dir) && fs.statSync(dir).isDirectory())) {
+    if (!stat.isDirectory()) {
         throw new Error(`"${dir}": Not a valid directory!`);
     }
 
