@@ -48,7 +48,7 @@ const parseVariables = (sassFilesString, options) => {
 };
 
 const parseOptions = opts => {
-    const options = Object.assign(defaultOptions, opts);
+    const options = { ...defaultOptions, ...opts };
 
     if (Boolean(options.ignore) && !Array.isArray(options.ignore)) {
         throw new TypeError('`ignore` should be an Array');
