@@ -14,61 +14,41 @@ program
     .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated', '')
     .parse(process.argv);
 
-function main() {
+async function main() {
     const directories = program.args;
     const ignore = program.opts().ignore.split(',');
 
     console.log('Looking for unused variables');
 
-    let unusedList = [];
+    const executions = await Promise.allSettled(directories.map(path => executeForPath(path, ignore)));
 
-    const results = Promise.all(directories.map(path => executeForPath(path, ignore)));
+    let status = 0;
 
-    results.catch(error => {
-        console.log(chalk.redBright(error.message));
-        process.exit(1);
-    });
-
-    results.then(results => {
-        results.forEach(result => {
-            unusedList = [...unusedList, ...result];
-        });
-    });
-
-    results.then(() => showResults(unusedList.length));
-}
-
-const showResults = (unusedCount = 0) => {
-    if (unusedCount > 0) {
-        console.log(chalk.redBright(`${unusedCount} unused variables found`));
-        process.exit(1);
+    for (const result of executions) {
+        if (result.status === 'rejected') {
+            console.log(chalk.redBright(result.reason));
+            status = 1;
+        }
     }
 
-    console.log(chalk.greenBright('No unused variables found!'));
-    process.exit(0);
-};
+    process.exit(status);
+}
 
-const executeForPath = (arg, ignore) => {
-    return new Promise(resolve => {
-        const dir = path.resolve(arg);
+const executeForPath = async(arg, ignore) => {
+    const dir = path.resolve(arg);
+    const unusedVars = await fusv.find(dir, { ignore });
 
-        console.log(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
+    console.log(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
+    console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
 
-        // eslint-disable-next-line unicorn/no-array-callback-reference
-        const unusedVars = fusv.find(dir, { ignore });
-
-        console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
-
-        if (unusedVars.unused.length > 0) {
-            console.log(`${chalk.yellowBright.bold(unusedVars.unused.length)} are not used!`);
-        }
-
-        unusedVars.unused.forEach(unusedVar => {
+    if (unusedVars.unused.length > 0) {
+        console.log(`${chalk.yellowBright.bold(unusedVars.unused.length)} are not used!`);
+        for (const unusedVar of unusedVars.unused) {
             console.log(`Variable ${chalk.red(unusedVar)} is not being used!`);
-        });
-
-        resolve(unusedVars.unused);
-    });
+        }
+    } else {
+        console.log(chalk.greenBright(`No unused variables found in "${dir}!`));
+    }
 };
 
 const args = program.args.filter(arg => typeof arg === 'string');
