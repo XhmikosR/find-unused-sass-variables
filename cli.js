@@ -21,7 +21,34 @@ function main(args) {
 
     let unusedList = [];
 
-    args.forEach(arg => {
+    const results = Promise.all(args.map(path => executeForPath(path, ignore)));
+
+    results.catch(error => {
+        console.log(chalk.redBright(error.message));
+        process.exit(1);
+    });
+
+    results.then(results => {
+        results.forEach(result => {
+            unusedList = [...unusedList, ...result];
+        });
+    });
+
+    results.then(() => showResults(unusedList.length));
+}
+
+const showResults = (unusedCount = 0) => {
+    if (unusedCount > 0) {
+        console.log(chalk.redBright(`${unusedCount} unused variables found`));
+        process.exit(1);
+    }
+
+    console.log(chalk.greenBright('No unused variables found!'));
+    process.exit(0);
+};
+
+const executeForPath = (arg, ignore) => {
+    return new Promise(resolve => {
         const dir = path.resolve(arg);
 
         console.log(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
@@ -31,21 +58,17 @@ function main(args) {
 
         console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
 
+        if (unusedVars.unused.length > 0) {
+            console.log(`${chalk.yellowBright.bold(unusedVars.unused.length)} are not used!`);
+        }
+
         unusedVars.unused.forEach(unusedVar => {
-            console.log(`Variable ${chalk.bold(unusedVar)} is not being used!`);
+            console.log(`Variable ${chalk.red(unusedVar)} is not being used!`);
         });
 
-        // eslint-disable-next-line unicorn/prefer-spread
-        unusedList = unusedList.concat(unusedVars.unused);
+        resolve(unusedVars.unused);
     });
-
-    if (unusedList.length === 0) {
-        console.log('No unused variables found!');
-        process.exit(0);
-    }
-
-    process.exit(1);
-}
+};
 
 const args = commander.args.filter(arg => typeof arg === 'string');
 

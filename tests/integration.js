@@ -16,7 +16,7 @@ const ignore = ['$ignored-variable'];
 
 console.log('Running integration tests...');
 
-const result = fusv.find('./tests', { ignore });
+const result = fusv.find('./tests/', { ignore });
 
 if (result.unused.length === expectedUnused.length) {
     console.info('Tests passed!');
