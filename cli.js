@@ -3,25 +3,26 @@
 'use strict';
 
 const path = require('path');
-const commander = require('commander');
+const { program } = require('commander');
 const chalk = require('chalk');
 const { version } = require('./package.json');
 const fusv = require('.');
 
-commander
-    .usage('[options] <folders...>')
+program
+    .arguments('[options] <folders...>')
     .version(version, '-v, --version')
-    .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated')
+    .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated', '')
     .parse(process.argv);
 
-function main(args) {
-    const ignore = commander.ignore ? commander.ignore.split(',') : [];
+function main() {
+    const directories = program.args;
+    const ignore = program.opts().ignore.split(',');
 
     console.log('Looking for unused variables');
 
     let unusedList = [];
 
-    const results = Promise.all(args.map(path => executeForPath(path, ignore)));
+    const results = Promise.all(directories.map(path => executeForPath(path, ignore)));
 
     results.catch(error => {
         console.log(chalk.redBright(error.message));
@@ -70,10 +71,10 @@ const executeForPath = (arg, ignore) => {
     });
 };
 
-const args = commander.args.filter(arg => typeof arg === 'string');
+const args = program.args.filter(arg => typeof arg === 'string');
 
 if (args.length > 0) {
-    main(args);
+    main();
 } else {
-    commander.help();
+    program.help();
 }

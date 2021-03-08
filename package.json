@@ -17,6 +17,7 @@
     "lint": "npm run xo",
     "test": "npm run xo && npm run test:integration",
     "test:integration": "node tests/integration.js",
+    "check": "node ./cli.js tests/ non-existent-folder/ -i \"$a\"",
     "xo": "xo"
   },
   "repository": {
@@ -29,7 +30,7 @@
   "homepage": "https://github.com/XhmikosR/find-unused-sass-variables#readme",
   "dependencies": {
     "chalk": "^4.1.0",
-    "commander": "^5.1.0",
+    "commander": "^7.1.0",
     "escape-string-regexp": "^4.0.0",
     "glob": "^7.1.6",
     "postcss": "^8.2.6",
