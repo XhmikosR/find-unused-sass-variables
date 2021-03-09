@@ -14,15 +14,20 @@ program
     .arguments('[folders]')
     .version(version, '-v, --version')
     .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated', '')
+    .option('-e, --extension <fileType>', 'file extension to search', 'scss')
     .parse();
 
 async function main() {
     const directories = program.args;
-    const ignore = program.opts().ignore.split(',');
+    const programOptions = program.opts();
+    const options = {
+        ignore: programOptions.ignore.split(','),
+        fileExtension: programOptions.extension
+    };
 
     console.log('Looking for unused variables');
 
-    const executions = await Promise.allSettled(directories.map(path => executeForPath(path, ignore)));
+    const executions = await Promise.allSettled(directories.map(path => executeForPath(path, options)));
 
     let status = 0;
 
@@ -36,11 +41,11 @@ async function main() {
     process.exit(status);
 }
 
-const executeForPath = async(arg, ignore) => {
+const executeForPath = async(arg, options) => {
     const dir = path.resolve(arg);
-    const unusedVars = await fusv.findAsync(dir, { ignore });
+    const unusedVars = await fusv.findAsync(dir, options);
 
-    console.log(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
+    console.log(`Searching unused variables in ${chalk.cyan.bold(options.fileExtension)} files. Search dir "${chalk.cyan.bold(dir)}"...`);
     console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
 
     if (unusedVars.unused.length > 0) {

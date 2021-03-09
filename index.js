@@ -8,14 +8,15 @@ import parse from './lib/parse-variable.js';
 const globP = promisify(glob);
 
 const defaultOptions = {
-    ignore: []
+    ignore: [],
+    fileExtension: 'scss'
 };
 
 const findUnusedVarsAsync = async(strDir, opts) => {
     const options = parseOptions(opts);
     const dir = await sanitizeDirAsync(strDir);
     // Array of all Sass files
-    const sassFiles = await globP(path.join(dir, '**/*.scss'));
+    const sassFiles = await globP(path.join(dir, `**/*.${options.fileExtension}`));
 
     const executions = sassFiles.map(file => parseFileAsync(file, options));
     // String of all Sass files' content
@@ -27,7 +28,7 @@ const findUnusedVarsSync = (strDir, opts) => {
     const options = parseOptions(opts);
     const dir = sanitizeDirSync(strDir);
     // Array of all Sass files
-    const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
+    const sassFiles = glob.sync(path.join(dir, `**/*.${options.fileExtension}`));
 
     const sassFilesAsStrings = sassFiles.map(file => parseFileSync(file, options));
 
