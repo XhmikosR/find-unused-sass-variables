@@ -12,17 +12,21 @@ program
     .arguments('[options] <folders...>')
     .version(version, '-v, --version')
     .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated', '')
+    .option('-e, --extension <fileType>', 'file extension to search', 'scss')
     .parse(process.argv);
 
 function main() {
     const directories = program.args;
-    const ignore = program.opts().ignore.split(',');
+    const options = {
+        ignore: program.opts().ignore.split(','),
+        fileExtension: program.opts().extension
+    };
 
     console.log('Looking for unused variables');
 
     let unusedList = [];
 
-    const results = Promise.all(directories.map(path => executeForPath(path, ignore)));
+    const results = Promise.all(directories.map(path => executeForPath(path, options)));
 
     results.catch(error => {
         console.log(chalk.redBright(error.message));
@@ -48,14 +52,14 @@ const showResults = (unusedCount = 0) => {
     process.exit(0);
 };
 
-const executeForPath = (arg, ignore) => {
+const executeForPath = (arg, options) => {
     return new Promise(resolve => {
         const dir = path.resolve(arg);
 
-        console.log(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
+        console.log(`Searching unused variables in ${chalk.cyan.bold(options.fileExtension)} files. Search dir "${chalk.cyan.bold(dir)}"...`);
 
         // eslint-disable-next-line unicorn/no-array-callback-reference
-        const unusedVars = fusv.find(dir, { ignore });
+        const unusedVars = fusv.find(dir, options);
 
         console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
 

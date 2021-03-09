@@ -7,7 +7,8 @@ const escapeRegex = require('escape-string-regexp');
 const parse = require('./lib/parse-variable');
 
 const defaultOptions = {
-    ignore: []
+    ignore: [],
+    fileExtension: 'scss'
 };
 
 const findUnusedVars = (strDir, opts) => {
@@ -15,7 +16,7 @@ const findUnusedVars = (strDir, opts) => {
     const dir = parseDir(strDir);
 
     // Array of all Sass files
-    const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
+    const sassFiles = glob.sync(path.join(dir, `**/*.${options.fileExtension}`));
 
     // String of all Sass files' content
     const sassFilesString = sassFiles.reduce((sassStr, file) => {
