@@ -34,7 +34,7 @@
     "escape-string-regexp": "^4.0.0",
     "glob": "^7.1.6",
     "postcss": "^8.2.7",
-    "postcss-scss": "^3.0.4"
+    "postcss-scss": "^3.0.5"
   },
   "devDependencies": {
     "xo": "^0.38.2"
