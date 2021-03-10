@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 'use strict';
 
 const fusv = require('..');
@@ -14,19 +16,23 @@ const expectedUnused = [
 
 const ignore = ['$ignored-variable'];
 
-console.log('Running integration tests...');
+(async() => {
+    try {
+        console.log('Running integration tests...');
 
-const results = fusv.find('./tests/', { ignore });
-results.then(result => {
-    checkResults(result);
-});
+        const result = await fusv.find('./tests/', { ignore });
 
-function checkResults(result) {
-    if (result.unused.length === expectedUnused.length) {
-        console.info('Tests passed!');
-    } else {
-        throw new Error(`Expected ${expectedUnused.length} and got ${result.unused.length}
-        Expected: ${expectedUnused.join(', ')}
-        Got: ${result.unused.join(', ')}`);
+        if (result.unused.length === expectedUnused.length) {
+            console.log('Tests passed!');
+        } else {
+            throw new Error(
+                `Expected ${expectedUnused.length} unused variables and got ${result.unused.length}.\n` +
+                `Expected: ${expectedUnused.join(', ')}\n` +
+                `Got: ${result.unused.join(', ')}`
+            );
+        }
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
     }
-}
+})();
