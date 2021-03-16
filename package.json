@@ -33,7 +33,7 @@
     "commander": "^7.1.0",
     "escape-string-regexp": "^4.0.0",
     "glob": "^7.1.6",
-    "postcss": "^8.2.7",
+    "postcss": "^8.2.8",
     "postcss-scss": "^3.0.5"
   },
   "devDependencies": {
