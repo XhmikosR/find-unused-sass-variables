@@ -37,6 +37,14 @@ console.log(unused.total);
 // ignoring variables
 const ignoredVars = ['$my-var', '$my-second-var']
 unused = fusv.find('scss', { ignore: ignoredVars })
+
+// Use Asynchornous
+let unused = await fusv.findAsync('directory')
+// or like Promise
+let unused = fusv.findAsync('directory').then(result => {
+    console.log(unused.unused);
+})
+
 ```
 
 ### find(dir, options)
@@ -45,6 +53,13 @@ unused = fusv.find('scss', { ignore: ignoredVars })
 * `options`: optional options Object
 
 Returns an object with `unused` and `total`. `unused` has the array of unused variables and `total` has the sum of all variables in the files (unused and used ones).
+
+### findAsync(dir, options)
+
+* as `find(dir, options)`
+
+Returns a Promise which resolves result; is the same as `find(dir, options)` result.
+
 
 #### options.ignore
 
