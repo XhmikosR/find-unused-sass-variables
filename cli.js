@@ -36,7 +36,7 @@ async function main() {
 
 const executeForPath = async(arg, ignore) => {
     const dir = path.resolve(arg);
-    const unusedVars = await fusv.find(dir, { ignore });
+    const unusedVars = await fusv.findAsync(dir, { ignore });
 
     console.log(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
     console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
