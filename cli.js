@@ -54,7 +54,7 @@ const executeForPath = (arg, ignore) => {
 
         console.log(`Finding unused variables in "${chalk.cyan.bold(dir)}"...`);
 
-        // eslint-disable-next-line unicorn/no-array-callback-reference
+        // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
         const unusedVars = fusv.find(dir, { ignore });
 
         console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
