@@ -56,8 +56,17 @@
   "xo": {
     "space": 4,
     "rules": {
+      "arrow-body-style": "off",
       "capitalized-comments": "off",
+      "comma-dangle": [
+        "error",
+        "never"
+      ],
       "import/extensions": "off",
+      "operator-linebreak": [
+        "error",
+        "after"
+      ],
       "object-curly-spacing": [
         "error",
         "always"
@@ -67,6 +76,7 @@
         "never"
       ],
       "unicorn/no-array-reduce": "off",
+      "unicorn/prefer-module": "off",
       "unicorn/prevent-abbreviations": "off"
     }
   }
