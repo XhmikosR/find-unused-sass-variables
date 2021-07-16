@@ -37,7 +37,7 @@
     "postcss-scss": "^4.0.0"
   },
   "devDependencies": {
-    "xo": "^0.39.1"
+    "xo": "^0.42.0"
   },
   "files": [
     "cli.js",
@@ -56,7 +56,12 @@
   "xo": {
     "space": 4,
     "rules": {
+      "arrow-body-style": "off",
       "capitalized-comments": "off",
+      "comma-dangle": [
+        "error",
+        "never"
+      ],
       "import/extensions": "off",
       "object-curly-spacing": [
         "error",
@@ -69,6 +74,7 @@
       ],
       "unicorn/no-array-for-each": "off",
       "unicorn/no-array-reduce": "off",
+      "unicorn/prefer-module": "off",
       "unicorn/prevent-abbreviations": "off"
     }
   }
