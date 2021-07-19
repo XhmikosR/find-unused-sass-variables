@@ -45,7 +45,7 @@
     "lib/parse-variable.js"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=12.19"
   },
   "keywords": [
     "sass",
@@ -62,12 +62,10 @@
         "error",
         "always"
       ],
-      "promise/prefer-await-to-then": "off",
       "space-before-function-paren": [
         "error",
         "never"
       ],
-      "unicorn/no-array-for-each": "off",
       "unicorn/no-array-reduce": "off",
       "unicorn/prevent-abbreviations": "off"
     }

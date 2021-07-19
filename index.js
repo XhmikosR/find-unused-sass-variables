@@ -2,38 +2,77 @@
 
 const fs = require('fs');
 const path = require('path');
+const { promisify } = require('util');
 const glob = require('glob');
 const escapeRegex = require('escape-string-regexp');
 const parse = require('./lib/parse-variable');
+
+const globP = promisify(glob);
 
 const defaultOptions = {
     ignore: []
 };
 
-const findUnusedVars = (strDir, opts) => {
+const findUnusedVarsAsync = async(strDir, opts) => {
     const options = parseOptions(opts);
-    const dir = parseDir(strDir);
+    const dir = await sanitizeDirAsync(strDir);
+    // Array of all Sass files
+    const sassFiles = await globP(path.join(dir, '**/*.scss'));
 
+    const executions = sassFiles.map(file => parseFileAsync(file, options));
+    // String of all Sass files' content
+    const sassFilesAsStrings = await Promise.all(executions);
+    return makeResults(sassFilesAsStrings);
+};
+
+const findUnusedVarsSync = (strDir, opts) => {
+    const options = parseOptions(opts);
+    const dir = sanitizeDirSync(strDir);
     // Array of all Sass files
     const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
 
-    // String of all Sass files' content
-    const sassFilesString = sassFiles.reduce((sassStr, file) => {
-        sassStr += fs.readFileSync(file, 'utf8');
-        return sassStr;
-    }, '');
+    const sassFilesAsStrings = sassFiles.map(file => parseFileSync(file, options));
 
-    return parseVariables(sassFilesString, options);
+    return makeResults(sassFilesAsStrings);
 };
 
-const parseVariables = (sassFilesString, options) => {
-    // Remove jekyll comments
-    if (sassFilesString.includes('---')) {
-        sassFilesString = sassFilesString.replace(/---/g, '');
+function makeResults(sassFilesAsStrings) {
+    let variables = [];
+    let combinedSassFile = '';
+
+    for (const result of sassFilesAsStrings) {
+        variables = [...variables, ...result.variables];
+        combinedSassFile += result.sassFileString;
     }
 
-    const variables = parse(sassFilesString, options.ignore);
+    return filterVariables(combinedSassFile, variables);
+}
 
+const parseFileAsync = async(file, options) => {
+    const sassFileString = await fs.promises.readFile(file, 'utf8');
+    return parseData(sassFileString, options);
+};
+
+const parseFileSync = (file, options) => {
+    const sassFileString = fs.readFileSync(file, 'utf8');
+    return parseData(sassFileString, options);
+};
+
+const parseData = (sassFileString, options) => {
+    // Remove jekyll comments
+    if (sassFileString.includes('---')) {
+        sassFileString = sassFileString.replace(/---/g, '');
+    }
+
+    const variables = parse(sassFileString, options.ignore);
+
+    return {
+        sassFileString,
+        variables
+    };
+};
+
+const filterVariables = (sassFilesString, variables) => {
     // Store unused vars from all files and loop through each variable
     const unusedVars = variables.filter(variable => {
         const re = new RegExp(`(${escapeRegex(variable)})\\b(?!-)`, 'g');
@@ -60,16 +99,28 @@ const parseOptions = opts => {
     return options;
 };
 
-const parseDir = strDir => {
+const sanitizeDirAsync = async strDir => {
     const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
+    const stat = await fs.promises.lstat(dir);
+    return checkDir(stat, dir);
+};
 
-    if (!(fs.existsSync(dir) && fs.statSync(dir).isDirectory())) {
+const sanitizeDirSync = strDir => {
+    const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
+    const stat = fs.statSync(dir);
+
+    return checkDir(stat, dir);
+};
+
+function checkDir(stat, dir) {
+    if (!stat.isDirectory()) {
         throw new Error(`"${dir}": Not a valid directory!`);
     }
 
     return dir;
-};
+}
 
 module.exports = {
-    find: findUnusedVars
+    findAsync: findUnusedVarsAsync,
+    find: findUnusedVarsSync
 };
