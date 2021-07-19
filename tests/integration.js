@@ -16,7 +16,7 @@ const expectedUnused = [
 
 const ignore = ['$ignored-variable'];
 
-const execBaseTest = (type, result) => {
+const runTests = (type, result) => {
     console.log(`Running ${type} integration tests...`);
 
     if (result.unused.length === expectedUnused.length) {
@@ -30,18 +30,20 @@ const execBaseTest = (type, result) => {
     }
 };
 
-try {
-    const result = fusv.find('./tests/', { ignore });
-    execBaseTest('Sync', result);
-} catch (error) {
-    console.error(error);
-    process.exit(1);
-}
+(() => {
+    try {
+        const result = fusv.find('./tests/', { ignore });
+        runTests('sync', result);
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }
+})();
 
 (async() => {
     try {
         const result = await fusv.findAsync('./tests/', { ignore });
-        execBaseTest('Async', result);
+        runTests('async', result);
     } catch (error) {
         console.error(error);
         process.exit(1);
