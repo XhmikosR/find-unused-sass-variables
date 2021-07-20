@@ -9,10 +9,10 @@ const { version } = require('./package.json');
 const fusv = require('.');
 
 program
-    .arguments('[options] <folders...>')
+    .arguments('[folders]')
     .version(version, '-v, --version')
     .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated', '')
-    .parse(process.argv);
+    .parse();
 
 async function main() {
     const directories = program.args;
