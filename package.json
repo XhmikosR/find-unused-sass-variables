@@ -5,7 +5,8 @@
   "author": "XhmikosR <xhmikosr@gmail.com>",
   "funding": "https://github.com/sponsors/XhmikosR",
   "contributors": [
-    "Johann-S <johann.servoire@gmail.com>"
+    "Johann-S <johann.servoire@gmail.com>",
+    "GeoSot <geo.sotis@gmail.com>"
   ],
   "license": "MIT",
   "main": "index.js",
