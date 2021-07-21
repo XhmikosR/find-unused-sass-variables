@@ -5,7 +5,7 @@ const path = require('path');
 const { promisify } = require('util');
 const glob = require('glob');
 const escapeRegex = require('escape-string-regexp');
-const parse = require('./lib/parse-variable');
+const parse = require('./lib/parse-variable.js');
 
 const globP = promisify(glob);
 
