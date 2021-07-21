@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-'use strict';
-
-const fusv = require('..');
+import fusv from '../index.js';
 
 const expectedUnused = [
     '$a',

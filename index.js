@@ -1,11 +1,9 @@
-'use strict';
-
-const fs = require('fs');
-const path = require('path');
-const { promisify } = require('util');
-const glob = require('glob');
-const escapeRegex = require('escape-string-regexp');
-const parse = require('./lib/parse-variable.js');
+import fs from 'node:fs';
+import path from 'node:path';
+import { promisify } from 'node:util';
+import glob from 'glob';
+import escapeRegex from 'escape-string-regexp';
+import parse from './lib/parse-variable.js';
 
 const globP = promisify(glob);
 
@@ -120,7 +118,8 @@ function checkDir(stat, dir) {
     return dir;
 }
 
-module.exports = {
+/* eslint-disable-next-line import/no-anonymous-default-export */
+export default {
     findAsync: findUnusedVarsAsync,
     find: findUnusedVarsSync
 };
