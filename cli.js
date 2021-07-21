@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
-'use strict';
-
-const path = require('path');
-const { program } = require('commander');
-const chalk = require('chalk');
+// Construct the require method
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import { program } from 'commander';
+import chalk from 'chalk';
+import fusv from './index.js';
+// Bring in the ability to create the 'require' method
+const require = createRequire(import.meta.url);
 const { version } = require('./package.json');
-const fusv = require('.');
 
 program
     .arguments('[folders]')

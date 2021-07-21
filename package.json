@@ -10,6 +10,11 @@
   ],
   "license": "MIT",
   "main": "index.js",
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
   "bin": {
     "find-unused-sass-variables": "./cli.js",
     "fusv": "./cli.js"
@@ -75,7 +80,6 @@
         "error",
         "never"
       ],
-      "unicorn/prefer-module": "off",
       "unicorn/prevent-abbreviations": "off"
     }
   }
