@@ -49,21 +49,21 @@ function makeResults(sassFilesAsStrings) {
 
 const parseFileAsync = async(file, options) => {
     const sassFileString = await fs.promises.readFile(file, 'utf8');
-    return parseData(sassFileString, options);
+    return parseData(file, sassFileString, options);
 };
 
 const parseFileSync = (file, options) => {
     const sassFileString = fs.readFileSync(file, 'utf8');
-    return parseData(sassFileString, options);
+    return parseData(file, sassFileString, options);
 };
 
-const parseData = (sassFileString, options) => {
+const parseData = (fileName, sassFileString, options) => {
     // Remove jekyll comments
     if (sassFileString.includes('---')) {
         sassFileString = sassFileString.replace(/---/g, '');
     }
 
-    const variables = parse(sassFileString, options.ignore);
+    const variables = parse(fileName, sassFileString, options.ignore);
 
     return {
         sassFileString,
@@ -74,7 +74,7 @@ const parseData = (sassFileString, options) => {
 const filterVariables = (sassFilesString, variables) => {
     // Store unused vars from all files and loop through each variable
     const unusedVars = variables.filter(variable => {
-        const re = new RegExp(`(${escapeRegex(variable)})\\b(?!-)`, 'g');
+        const re = new RegExp(`(${escapeRegex(variable.name)})\\b(?!-)`, 'g');
 
         return sassFilesString.match(re).length === 1;
     });
