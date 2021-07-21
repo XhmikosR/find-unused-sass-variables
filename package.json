@@ -21,9 +21,10 @@
   },
   "scripts": {
     "lint": "npm run xo",
-    "test": "npm run test:integration",
+    "test": "npm run test:integration && npm run test:options",
     "test:integration": "node tests/integration.js",
     "test:cli": "node ./cli.js tests/ --ignore=\"$a,$b\"",
+    "test:options": "node tests/options.js",
     "xo": "xo"
   },
   "repository": {
