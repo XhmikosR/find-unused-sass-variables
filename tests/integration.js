@@ -32,7 +32,7 @@ const runTests = (type, result) => {
 
 try {
     const result = fusv.find('./tests/', { ignore });
-    runTests('Sync', result);
+    runTests('sync', result);
 } catch (error) {
     console.error(error);
     process.exit(1);
