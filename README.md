@@ -38,13 +38,13 @@ console.log(unused.total);
 const ignoredVars = ['$my-var', '$my-second-var']
 unused = fusv.find('scss', { ignore: ignoredVars })
 
-// specifing extensions files
+// specifing file extensions
 unused = fusv.find('scss', { fileExtensions: ['css','scss']})
 
-
-// Use Asynchornous
+// asynchornous usage
 let unused = await fusv.findAsync('directory')
-// or like Promise
+
+// or like a Promise
 let unused = fusv.findAsync('directory').then(result => {
     console.log(unused.unused);
 })
