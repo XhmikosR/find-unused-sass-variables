@@ -71,7 +71,7 @@ Array of strings of the variables to ignore, e.g. `['$my-var', '$my-second-var']
 
 #### options.fileExtensions
 
-Array of extensions to search of e.g. `['scss']`
+Array of file extensions to search for unused variables in. e.g. `['scss']`
 
 ## Disable & enable
 
