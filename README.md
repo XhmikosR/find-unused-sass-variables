@@ -17,7 +17,7 @@ npm install find-unused-sass-variables --save-dev
 ## Usage
 
 ```shell
-find-unused-sass-variables folder [, folder2...] --ignore "$my-var,$my-second-var"
+find-unused-sass-variables folder [, folder2...] --ignore "$my-var,$my-second-var" -e scss -e css
 # or
 fusv folder [, folder2...]
 ```
@@ -38,9 +38,13 @@ console.log(unused.total);
 const ignoredVars = ['$my-var', '$my-second-var']
 unused = fusv.find('scss', { ignore: ignoredVars })
 
-// Use Asynchornous
+// specifing file extensions
+unused = fusv.find('scss', { fileExtensions: ['css','scss']})
+
+// asynchornous usage
 let unused = await fusv.findAsync('directory')
-// or like Promise
+
+// or like a Promise
 let unused = fusv.findAsync('directory').then(result => {
     console.log(unused.unused);
 })
@@ -64,6 +68,10 @@ Returns a Promise which resolves result; is the same as `find(dir, options)` res
 #### options.ignore
 
 Array of strings of the variables to ignore, e.g. `['$my-var', '$my-second-var']`
+
+#### options.fileExtensions
+
+Array of file extensions to search for unused variables in. e.g. `['scss']`
 
 ## Disable & enable
 

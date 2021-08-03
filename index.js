@@ -8,14 +8,15 @@ import parse from './lib/parse-variable.js';
 const globP = promisify(glob);
 
 const defaultOptions = {
-    ignore: []
+    ignore: [],
+    fileExtensions: ['scss']
 };
 
 const findUnusedVarsAsync = async(strDir, opts) => {
     const options = parseOptions(opts);
     const dir = await sanitizeDirAsync(strDir);
     // Array of all Sass files
-    const sassFiles = await globP(path.join(dir, '**/*.scss'));
+    const sassFiles = await globP(path.join(dir, `**/*.${options.fileExtensions}`));
 
     const executions = sassFiles.map(file => parseFileAsync(file, options));
     // String of all Sass files' content
@@ -27,7 +28,7 @@ const findUnusedVarsSync = (strDir, opts) => {
     const options = parseOptions(opts);
     const dir = sanitizeDirSync(strDir);
     // Array of all Sass files
-    const sassFiles = glob.sync(path.join(dir, '**/*.scss'));
+    const sassFiles = glob.sync(path.join(dir, `**/*.${options.fileExtensions}`));
 
     const sassFilesAsStrings = sassFiles.map(file => parseFileSync(file, options));
 
@@ -93,6 +94,13 @@ const parseOptions = opts => {
 
     // Trim list of ignored variables
     options.ignore = options.ignore.map(val => val.trim());
+
+    let extensions = options.fileExtensions;
+
+    extensions = Array.isArray(extensions) ? extensions : [extensions];
+    // Replace possible fullstop prefix
+    extensions = extensions.map(ext => ext.startsWith('.') ? ext.slice(1) : ext);
+    options.fileExtensions = extensions.length > 1 ? `+(${extensions.join('|')})` : extensions;
 
     return options;
 };
