@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import process from 'node:process';
 import fusv from '../index.js';
 
 console.log('Running "Options" tests...');

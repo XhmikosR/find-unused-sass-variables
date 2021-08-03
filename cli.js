@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import process from 'node:process';
 // Construct the require method
 import { createRequire } from 'node:module';
 import path from 'node:path';
