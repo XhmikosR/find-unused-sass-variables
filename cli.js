@@ -51,7 +51,9 @@ const executeForPath = async(arg, options) => {
 
     if (unusedVars.unused.length > 0) {
         console.log(`${chalk.yellowBright.bold(unusedVars.unused.length)} are not used!`);
-        console.table(unusedVars.unused, ['name', 'file', 'line']);
+        for (const { name, file, line } of unusedVars.unused) {
+            console.log(`Variable ${chalk.red(name)} is not being used! ${chalk.gray(file)}:${chalk.yellowBright(line)}`);
+        }
     } else {
         console.log(chalk.greenBright(`No unused variables found in "${dir}!`));
     }
