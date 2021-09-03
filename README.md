@@ -26,20 +26,32 @@ fusv folder [, folder2...]
 
 ```js
 const fusv = require('find-unused-sass-variables')
-// 'scss' is a folder
-let unused = fusv.find('scss')
+// 'directory' is a folder
+let unused = fusv.find('directory')
 // Array of unused variables
 console.log(unused.unused);
-// ['$foo', '$bar', '$imunused']
+// Array<{ name: string, line: string, file: string }>
+/*
+* [
+*   {
+*      name = '$foo';
+*      file = 'file where this variable can be found';
+*      line = 'line of file';
+*   },
+*   {
+*      ....
+*   }
+* ]
+*/
 console.log(unused.total);
 // Total number of variables in the files
 
 // ignoring variables
 const ignoredVars = ['$my-var', '$my-second-var']
-unused = fusv.find('scss', { ignore: ignoredVars })
+unused = fusv.find('directory', { ignore: ignoredVars })
 
 // specifing file extensions
-unused = fusv.find('scss', { fileExtensions: ['css','scss']})
+unused = fusv.find('directory', { fileExtensions: ['css','scss']})
 
 // asynchornous usage
 let unused = await fusv.findAsync('directory')
