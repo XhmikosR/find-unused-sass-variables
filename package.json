@@ -20,12 +20,13 @@
     "fusv": "./cli.js"
   },
   "scripts": {
-    "lint": "npm run xo",
+    "xo": "xo",
+    "lint": "xo",
+    "fix": "xo --fix",
     "test": "npm-run-all --aggregate-output --continue-on-error --parallel test:*",
     "test:cli": "node ./cli.js tests/ --ignore=\"$a,$b\"",
     "test:integration": "node tests/integration.js",
-    "test:options": "node tests/options.js",
-    "xo": "xo"
+    "test:options": "node tests/options.js"
   },
   "repository": {
     "type": "git",
