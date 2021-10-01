@@ -42,7 +42,7 @@
     "escape-string-regexp": "^5.0.0",
     "glob": "^7.1.7",
     "postcss": "^8.3.6",
-    "postcss-scss": "^4.0.0"
+    "postcss-scss": "^4.0.1"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5",
