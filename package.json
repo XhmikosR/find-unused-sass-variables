@@ -38,7 +38,7 @@
   "homepage": "https://github.com/XhmikosR/find-unused-sass-variables#readme",
   "dependencies": {
     "chalk": "^4.1.2",
-    "commander": "^8.2.0",
+    "commander": "^8.3.0",
     "escape-string-regexp": "^5.0.0",
     "glob": "^7.2.0",
     "postcss": "^8.3.9",
