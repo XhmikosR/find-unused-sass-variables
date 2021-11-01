@@ -38,15 +38,15 @@
   "homepage": "https://github.com/XhmikosR/find-unused-sass-variables#readme",
   "dependencies": {
     "chalk": "^4.1.2",
-    "commander": "^8.2.0",
+    "commander": "^8.3.0",
     "escape-string-regexp": "^5.0.0",
     "glob": "^7.2.0",
-    "postcss": "^8.3.9",
-    "postcss-scss": "^4.0.1"
+    "postcss": "^8.3.11",
+    "postcss-scss": "^4.0.2"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5",
-    "xo": "^0.45.0"
+    "xo": "^0.46.3"
   },
   "files": [
     "cli.js",
