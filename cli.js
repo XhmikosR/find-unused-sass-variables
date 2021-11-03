@@ -29,7 +29,6 @@ async function main() {
     console.log('Looking for unused variables');
 
     const executions = await Promise.allSettled(directories.map(path => executeForPath(path, options)));
-
     let status = 0;
 
     for (const result of executions) {
@@ -46,11 +45,11 @@ const executeForPath = async(arg, options) => {
     const dir = path.resolve(arg);
     const unusedVars = await fusv.findAsync(dir, options);
 
-    console.log(`Searching for unused variables in "${picocolors.bold(picocolors.cyan(dir))}" folder, ${picocolors.bold(picocolors.cyan(options.fileExtensions.join(', ')))} files...`);
-    console.log(`${picocolors.bold(picocolors.cyan(unusedVars.total))} total variables.`);
+    console.log(`Searching for unused variables in "${picocolors.cyan(dir)}" folder, ${picocolors.cyan(options.fileExtensions.join(', '))} files...`);
+    console.log(`${picocolors.cyan(unusedVars.total)} total variables.`);
 
     if (unusedVars.unused.length > 0) {
-        console.log(`${picocolors.bold(picocolors.yellow(unusedVars.unused.length))} are not used!`);
+        console.log(`${picocolors.yellow(unusedVars.unused.length)} are not used!`);
         for (const { name, file, line } of unusedVars.unused) {
             console.log(`Variable ${picocolors.red(name)} is not being used! ${picocolors.gray(file)}:${picocolors.yellow(line)}`);
         }
