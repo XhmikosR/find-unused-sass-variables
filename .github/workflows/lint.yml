@@ -7,7 +7,7 @@ env:
   NODE: 16
 
 jobs:
-  run:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
