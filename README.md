@@ -2,7 +2,7 @@
 
 [![NPM version](https://img.shields.io/npm/v/find-unused-sass-variables.svg)](https://www.npmjs.com/package/find-unused-sass-variables)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/XhmikosR/find-unused-sass-variables.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/XhmikosR/find-unused-sass-variables/alerts/)
-[![Build Status](https://github.com/XhmikosR/find-unused-sass-variables/workflows/Tests/badge.svg)](https://github.com/XhmikosR/find-unused-sass-variables/actions?workflow=Tests)
+[![Build Status](https://img.shields.io/github/workflow/status/XhmikosR/find-unused-sass-variables/CI/main?label=CI&logo=github)](https://github.com/XhmikosR/find-unused-sass-variables/actions?query=workflow%3ACI+branch%3Amain)
 
 A simple tool to check for unused Sass variables in a directory.
 
