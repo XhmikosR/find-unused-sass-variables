@@ -5,7 +5,7 @@ import process from 'node:process';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { program } from 'commander';
-import chalk from 'chalk';
+import picocolors from 'picocolors';
 import fusv from './index.js';
 // Bring in the ability to create the 'require' method
 const require = createRequire(import.meta.url);
@@ -29,12 +29,11 @@ async function main() {
     console.log('Looking for unused variables');
 
     const executions = await Promise.allSettled(directories.map(path => executeForPath(path, options)));
-
     let status = 0;
 
     for (const result of executions) {
         if (result.status === 'rejected') {
-            console.log(chalk.redBright(result.reason));
+            console.log(picocolors.red(result.reason));
             status = 1;
         }
     }
@@ -46,16 +45,16 @@ const executeForPath = async(arg, options) => {
     const dir = path.resolve(arg);
     const unusedVars = await fusv.findAsync(dir, options);
 
-    console.log(`Searching for unused variables in "${chalk.cyan.bold(dir)}" folder, ${chalk.cyan.bold(options.fileExtensions.join(', '))} files...`);
-    console.log(`${chalk.cyan.bold(unusedVars.total)} total variables.`);
+    console.log(`Searching for unused variables in "${picocolors.cyan(dir)}" folder, ${picocolors.cyan(options.fileExtensions.join(', '))} files...`);
+    console.log(`${picocolors.cyan(unusedVars.total)} total variables.`);
 
     if (unusedVars.unused.length > 0) {
-        console.log(`${chalk.yellowBright.bold(unusedVars.unused.length)} are not used!`);
+        console.log(`${picocolors.yellow(unusedVars.unused.length)} are not used!`);
         for (const { name, file, line } of unusedVars.unused) {
-            console.log(`Variable ${chalk.red(name)} is not being used! ${chalk.gray(file)}:${chalk.yellowBright(line)}`);
+            console.log(`Variable ${picocolors.red(name)} is not being used! ${picocolors.gray(file)}:${picocolors.yellow(line)}`);
         }
     } else {
-        console.log(chalk.greenBright(`No unused variables found in "${dir}!`));
+        console.log(picocolors.green(`No unused variables found in "${dir}!`));
     }
 };
 
