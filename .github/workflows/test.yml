@@ -6,14 +6,15 @@ env:
   FORCE_COLOR: 2
 
 jobs:
-  run:
-    name: Node ${{ matrix.node }}
-    runs-on: ubuntu-latest
+  test:
+    name: Node ${{ matrix.node }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
         node: [12, 14, 16]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - name: Clone repository
