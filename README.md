@@ -1,7 +1,7 @@
 # find-unused-sass-variables
 
-[![NPM version](https://img.shields.io/npm/v/find-unused-sass-variables.svg)](https://www.npmjs.com/package/find-unused-sass-variables)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/XhmikosR/find-unused-sass-variables.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/XhmikosR/find-unused-sass-variables/alerts/)
+[![npm version](https://img.shields.io/npm/v/find-unused-sass-variables)](https://www.npmjs.com/package/find-unused-sass-variables)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/XhmikosR/find-unused-sass-variables?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/XhmikosR/find-unused-sass-variables/alerts/)
 [![Build Status](https://img.shields.io/github/workflow/status/XhmikosR/find-unused-sass-variables/CI/main?label=CI&logo=github)](https://github.com/XhmikosR/find-unused-sass-variables/actions?query=workflow%3ACI+branch%3Amain)
 
 A simple tool to check for unused Sass variables in a directory.
@@ -51,7 +51,7 @@ unused = fusv.find('directory', { ignore: ignoredVars })
 // specifing file extensions
 unused = fusv.find('directory', { fileExtensions: ['css','scss']})
 
-// asynchornous usage
+// asynchronous usage
 let unused = await fusv.findAsync('directory')
 
 // or like a Promise
@@ -106,3 +106,4 @@ $used-variable-2: #ace;
 ## License
 
 [MIT](LICENSE)
+
