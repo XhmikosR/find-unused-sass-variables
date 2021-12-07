@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 
+import fs from 'node:fs';
 import process from 'node:process';
-// Construct the require method
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import { program } from 'commander';
 import picocolors from 'picocolors';
 import fusv from './index.js';
-// Bring in the ability to create the 'require' method
-const require = createRequire(import.meta.url);
-const { version } = require('./package.json');
+
+const { version } = JSON.parse(fs.readFileSync(new URL('./package.json', import.meta.url)));
 
 program
     .arguments('[folders]')
