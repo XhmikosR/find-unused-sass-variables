@@ -54,7 +54,7 @@
     "lib/parse-variable.js"
   ],
   "engines": {
-    "node": ">=12.19"
+    "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
   },
   "keywords": [
     "sass",
