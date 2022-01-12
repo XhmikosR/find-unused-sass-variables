@@ -7,7 +7,7 @@ env:
 
 jobs:
   test:
-    name: Node ${{ matrix.node }}
+    name: Node ${{ matrix.node }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
     strategy:
