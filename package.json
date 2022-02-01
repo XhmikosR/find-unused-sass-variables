@@ -12,8 +12,7 @@
   "main": "index.js",
   "type": "module",
   "exports": {
-    ".": "./index.js",
-    "./package.json": "./package.json"
+    ".": "./index.js"
   },
   "bin": {
     "find-unused-sass-variables": "./cli.js",
