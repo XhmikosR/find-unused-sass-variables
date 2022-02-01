@@ -30,4 +30,14 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: npm test
+        run: npm run test-ci
+
+      - name: Run CLI tests
+        run: npm run test:cli
+        id: cli_tests
+        continue-on-error: true
+
+      - name: Check CLI tests' status
+        shell: bash
+        run: |
+          if [[ ${{ steps.cli_tests.outcome }} == "failure" ]]; then exit 0; else exit 1; fi
