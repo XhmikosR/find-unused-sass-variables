@@ -52,7 +52,7 @@ const executeForPath = async(arg, options) => {
             console.log(`Variable ${picocolors.red(name)} is not being used! ${picocolors.gray(file)}:${picocolors.yellow(line)}`);
         }
 
-        throw new Error(`Found ${unusedVars.unused.length} unused variables in "${picocolors.cyan(dir)}" folder`);
+        return Promise.reject(new Error(`Found ${unusedVars.unused.length} unused variables in "${picocolors.cyan(dir)}" folder`));
     }
 
     console.log(picocolors.green(`No unused variables found in "${dir}!`));
