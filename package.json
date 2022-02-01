@@ -23,10 +23,11 @@
     "xo": "xo",
     "lint": "xo",
     "fix": "xo --fix",
-    "test": "npm-run-all --aggregate-output --continue-on-error --parallel test:*",
+    "test": "npm-run-all --aggregate-output --continue-on-error --parallel --parallel test:*",
     "test:cli": "node ./cli.js tests/ --ignore=\"$a,$b\"",
     "test:integration": "node tests/integration.js",
-    "test:options": "node tests/options.js"
+    "test:options": "node tests/options.js",
+    "test-ci": "npm-run-all --aggregate-output --continue-on-error --parallel test:integration test:options"
   },
   "repository": {
     "type": "git",
