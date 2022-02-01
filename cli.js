@@ -55,7 +55,7 @@ const executeForPath = async(arg, options) => {
         return Promise.reject(new Error(`Found ${unusedVars.unused.length} unused variables in "${picocolors.cyan(dir)}" folder`));
     }
 
-    console.log(picocolors.green(`No unused variables found in "${dir}!`));
+    console.log(picocolors.green(`No unused variables found in "${dir}!"`));
 };
 
 const args = program.args.filter(arg => typeof arg === 'string');
