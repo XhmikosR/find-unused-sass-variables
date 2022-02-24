@@ -7,7 +7,7 @@ import { program } from 'commander';
 import picocolors from 'picocolors';
 import fusv from './index.js';
 
-const { version } = JSON.parse(fs.readFileSync(new URL('./package.json', import.meta.url)));
+const { version } = JSON.parse(fs.readFileSync(new URL('package.json', import.meta.url)));
 
 program
     .arguments('[folders]')
@@ -52,7 +52,7 @@ const executeForPath = async(arg, options) => {
             console.log(`Variable ${picocolors.red(name)} is not being used! ${picocolors.gray(file)}:${picocolors.yellow(line)}`);
         }
 
-        return Promise.reject(new Error(`Found ${unusedVars.unused.length} unused variables in "${picocolors.cyan(dir)}" folder`));
+        throw new Error(`Found ${unusedVars.unused.length} unused variables in "${picocolors.cyan(dir)}" folder`);
     }
 
     console.log(picocolors.green(`No unused variables found in "${dir}!"`));
