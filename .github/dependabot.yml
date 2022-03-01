@@ -9,3 +9,10 @@ updates:
       timezone: Europe/Athens
     open-pull-requests-limit: 10
     versioning-strategy: increase
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: monthly
+      day: monday
+      time: "11:00"
+      timezone: Europe/Athens
