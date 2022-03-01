@@ -46,13 +46,14 @@ const executeForPath = async(arg, options) => {
     console.log(`\nSearching for unused variables in "${picocolors.cyan(dir)}" folder, ${picocolors.cyan(options.fileExtensions.join(', '))} files...`);
     console.log(`${picocolors.cyan(unusedVars.total)} total variables.`);
 
-    if (unusedVars.unused.length > 0) {
-        console.log(`${picocolors.yellow(unusedVars.unused.length)} are not used!`);
+    const unusedVarsNumber = unusedVars.unused.length;
+    if (unusedVarsNumber > 0) {
+        console.log(`${picocolors.yellow(unusedVarsNumber)} ${unusedVarsNumber > 1 ? 'are' : 'is'} not used!`);
         for (const { name, file, line } of unusedVars.unused) {
             console.log(`Variable ${picocolors.red(name)} is not being used! ${picocolors.gray(file)}:${picocolors.yellow(line)}`);
         }
 
-        throw new Error(`Found ${unusedVars.unused.length} unused variables in "${picocolors.cyan(dir)}" folder`);
+        throw new Error(`Found ${unusedVarsNumber} unused variable${unusedVarsNumber > 1 ? 's' : ''} in "${picocolors.cyan(dir)}" folder`);
     }
 
     console.log(picocolors.green(`No unused variables found in "${dir}!"`));
