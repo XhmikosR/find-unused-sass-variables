@@ -41,7 +41,7 @@
     "escape-string-regexp": "^5.0.0",
     "glob": "^7.2.0",
     "picocolors": "^1.0.0",
-    "postcss": "^8.4.7",
+    "postcss": "^8.4.12",
     "postcss-scss": "^4.0.3"
   },
   "devDependencies": {
