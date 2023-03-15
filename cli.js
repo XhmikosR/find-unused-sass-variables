@@ -56,7 +56,7 @@ const executeForPath = async(arg, options) => {
         throw new Error(`Found ${unusedVarsNumber} unused variable${unusedVarsNumber > 1 ? 's' : ''} in "${picocolors.cyan(dir)}" folder`);
     }
 
-    console.log(picocolors.green(`No unused variables found in "${dir}!"`));
+    console.log(picocolors.green(`No unused variables found in "${dir}"!`));
 };
 
 const args = program.args.filter(arg => typeof arg === 'string');
