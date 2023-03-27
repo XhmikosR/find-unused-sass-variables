@@ -20,7 +20,7 @@ async function main() {
     const directories = program.args;
     const programOptions = program.opts();
     const options = {
-        ignore: programOptions.ignore.split(','),
+        ignore: programOptions.ignore.split(',').map(i => `"${i}"`),
         fileExtensions: programOptions.extension
     };
 
