@@ -42,21 +42,23 @@ async function main() {
 const executeForPath = async(arg, options) => {
     const dir = path.resolve(arg);
     const unusedVars = await fusv.findAsync(dir, options);
+    const unusedVarsNumber = unusedVars.unused.length;
 
     console.log(`\nSearching for unused variables in "${picocolors.cyan(dir)}" folder, ${picocolors.cyan(options.fileExtensions.join(', '))} files...`);
-    console.log(`${picocolors.cyan(unusedVars.total)} total variables.`);
 
-    const unusedVarsNumber = unusedVars.unused.length;
     if (unusedVarsNumber > 0) {
-        console.log(`${picocolors.yellow(unusedVarsNumber)} ${unusedVarsNumber > 1 ? 'are' : 'is'} not used!`);
+        console.log(`${picocolors.cyan(unusedVars.total)} total variables, ${picocolors.red(unusedVarsNumber)} unused:`);
         for (const { name, file, line } of unusedVars.unused) {
-            console.log(`Variable ${picocolors.red(name)} is not being used! ${picocolors.gray(file)}:${picocolors.yellow(line)}`);
+            console.log(`  - ${picocolors.red(name)} ${picocolors.gray(file)}:${picocolors.cyan(line)}`);
         }
 
-        throw new Error(`Found ${unusedVarsNumber} unused variable${unusedVarsNumber > 1 ? 's' : ''} in "${picocolors.cyan(dir)}" folder`);
+        console.log(picocolors.red(`ERROR: Found ${unusedVarsNumber} unused variable${unusedVarsNumber > 1 ? 's' : ''} in "${picocolors.cyan(dir)}" folder`));
+        process.exit(1);
+    } else {
+        console.log(`${picocolors.cyan(unusedVars.total)} total variables`);
     }
 
-    console.log(picocolors.green(`No unused variables found in "${dir}"!`));
+    console.log(picocolors.green(`No unused variables found in "${picocolors.cyan(dir)}"!`));
 };
 
 const args = program.args.filter(arg => typeof arg === 'string');
