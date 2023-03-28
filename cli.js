@@ -5,7 +5,7 @@ import process from 'node:process';
 import path from 'node:path';
 import { program } from 'commander';
 import picocolors from 'picocolors';
-import quote from 'quote';
+import unquote from 'unquote';
 import fusv from './index.js';
 
 const { version } = JSON.parse(fs.readFileSync(new URL('package.json', import.meta.url)));
@@ -21,7 +21,7 @@ async function main() {
     const directories = program.args;
     const programOptions = program.opts();
     const options = {
-        ignore: programOptions.ignore.split(',').map(i => quote(i)),
+        ignore: programOptions.ignore.split(',').map(i => unquote(i)),
         fileExtensions: programOptions.extension
     };
 
