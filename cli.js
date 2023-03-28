@@ -52,8 +52,7 @@ const executeForPath = async(arg, options) => {
             console.log(`  - ${picocolors.red(name)} ${picocolors.gray(file)}:${picocolors.cyan(line)}`);
         }
 
-        console.log(picocolors.red(`ERROR: Found ${unusedVarsNumber} unused variable${unusedVarsNumber > 1 ? 's' : ''} in "${picocolors.cyan(dir)}" folder`));
-        process.exit(1);
+        throw new Error(`Found ${unusedVarsNumber} unused variable${unusedVarsNumber > 1 ? 's' : ''} in "${picocolors.cyan(dir)}" folder`);
     } else {
         console.log(`${picocolors.cyan(unusedVars.total)} total variables`);
     }
