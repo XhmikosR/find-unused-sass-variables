@@ -22,7 +22,8 @@ fusv folder [, folder2...]
 ## API
 
 ```js
-const fusv = require('find-unused-sass-variables')
+import fusv from 'find-unused-sass-variables'
+
 // 'directory' is a folder
 let unused = fusv.find('directory')
 // Array of unused variables
@@ -105,4 +106,3 @@ $used-variable-2: #ace;
 ## License
 
 [MIT](LICENSE)
-
