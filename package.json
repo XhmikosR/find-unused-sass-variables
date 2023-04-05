@@ -63,7 +63,7 @@
     "scss"
   ],
   "xo": {
-    "space": 4,
+    "space": true,
     "rules": {
       "arrow-body-style": "off",
       "capitalized-comments": "off",

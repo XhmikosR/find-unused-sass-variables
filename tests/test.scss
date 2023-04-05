@@ -4,21 +4,21 @@
 @charset "utf-8";
 
 .white {
-    $nestedVar: red;
+  $nestedVar: red;
 
-    background-color: $white;
+  background-color: $white;
 
-    a {
-        $nestNestedVar: blue;
+  a {
+    $nestNestedVar: blue;
 
-        color: $black-light;
-    }
+    color: $black-light;
+  }
 }
 
 .black-light {
-    background-color: $black-light;
+  background-color: $black-light;
 }
 
 .black-lightest {
-    background-color: $black-lightest;
+  background-color: $black-lightest;
 }

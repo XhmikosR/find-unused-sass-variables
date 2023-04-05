@@ -22,43 +22,48 @@ fusv folder [, folder2...]
 ## API
 
 ```js
-import fusv from 'find-unused-sass-variables'
+import fusv from 'find-unused-sass-variables';
 
 // 'directory' is a folder
-let unused = fusv.find('directory')
+const unused = fusv.find('directory');
 // Array of unused variables
 console.log(unused.unused);
 // Array<{ name: string, line: string, file: string }>
 /*
-* [
-*   {
-*      name = '$foo';
-*      file = 'file where this variable can be found';
-*      line = 'line of file';
-*   },
-*   {
-*      ....
-*   }
-* ]
+[
+  {
+    name = '$foo';
+    file = 'file where this variable can be found';
+    line = 'line of file';
+  },
+  {
+    ....
+  }
+]
 */
-console.log(unused.total);
 // Total number of variables in the files
+console.log(unused.total);
+```
 
-// ignoring variables
-const ignoredVars = ['$my-var', '$my-second-var']
-unused = fusv.find('directory', { ignore: ignoredVars })
+```js
+// Ignoring variables
+const ignoredVars = ['$my-var', '$my-second-var'];
+const unused = fusv.find('directory', { ignore: ignoredVars });
+```
 
-// specifing file extensions
-unused = fusv.find('directory', { fileExtensions: ['css','scss']})
+```js
+// Specifying file extensions
+const unused = fusv.find('directory', { fileExtensions: ['css','scss']});
+```
 
-// asynchronous usage
-let unused = await fusv.findAsync('directory')
+```js
+// Asynchronous usage
+let unused = await fusv.findAsync('directory');
 
 // or like a Promise
-let unused = fusv.findAsync('directory').then(result => {
-    console.log(unused.unused);
-})
-
+unused = fusv.findAsync('directory').then(result => {
+  console.log(unused.unused);
+});
 ```
 
 ### find(dir, options)
