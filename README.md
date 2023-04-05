@@ -106,7 +106,7 @@ $used-variable-2: #ace;
 
 * The tool's logic is pretty "dumb"; if you use the same name for a variable in different files or namespaces,
   then it won't distinguish between them.
-* The tool only looks for `.scss` files currently.
+* The tool only looks for `.scss` files by default, but you can optionally specify the file extension.
 
 ## License
 
