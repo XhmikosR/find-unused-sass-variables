@@ -1,11 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { promisify } from 'node:util';
-import glob from 'glob';
 import escapeRegex from 'escape-string-regexp';
+import { totalist } from 'totalist';
+// eslint-disable-next-line n/file-extension-in-import
+import { totalist as totalistSync } from 'totalist/sync';
 import parse from './lib/parse-variable.js';
-
-const globP = promisify(glob);
 
 const defaultOptions = {
   ignore: [],
@@ -16,11 +15,20 @@ const findUnusedVarsAsync = async(strDir, opts) => {
   const options = parseOptions(opts);
   const dir = await sanitizeDirAsync(strDir);
   // Array of all Sass files
-  const sassFiles = await globP(path.join(dir, `**/*.${options.fileExtensions}`));
+  const sassFiles = [];
+
+  await totalist(dir, (_relPath, absPath) => {
+    for (const extension of options.fileExtensions) {
+      if (absPath.endsWith(extension)) {
+        sassFiles.push(absPath);
+      }
+    }
+  });
 
   const executions = sassFiles.map(file => parseFileAsync(file, options));
   // String of all Sass files' content
   const sassFilesAsStrings = await Promise.all(executions);
+
   return makeResults(sassFilesAsStrings);
 };
 
@@ -28,8 +36,17 @@ const findUnusedVarsSync = (strDir, opts) => {
   const options = parseOptions(opts);
   const dir = sanitizeDirSync(strDir);
   // Array of all Sass files
-  const sassFiles = glob.sync(path.join(dir, `**/*.${options.fileExtensions}`));
+  const sassFiles = [];
 
+  totalistSync(dir, (_relPath, absPath) => {
+    for (const extension of options.fileExtensions) {
+      if (absPath.endsWith(extension)) {
+        sassFiles.push(absPath);
+      }
+    }
+  });
+
+  // String of all Sass files' content
   const sassFilesAsStrings = sassFiles.map(file => parseFileSync(file, options));
 
   return makeResults(sassFilesAsStrings);
@@ -96,11 +113,11 @@ const parseOptions = opts => {
   options.ignore = options.ignore.map(val => val.trim());
 
   let extensions = options.fileExtensions;
-
+  // Make sure extensions is an array
   extensions = Array.isArray(extensions) ? extensions : [extensions];
-  // Replace possible fullstop prefix
-  extensions = extensions.map(ext => ext.startsWith('.') ? ext.slice(1) : ext);
-  options.fileExtensions = extensions.length > 1 ? `+(${extensions.join('|')})` : extensions;
+  // Add missing fullstop prefix
+  extensions = extensions.map(ext => ext.startsWith('.') ? ext : `.${ext}`);
+  options.fileExtensions = extensions;
 
   return options;
 };
@@ -126,7 +143,8 @@ function checkDir(stat, dir) {
   return dir;
 }
 
-/* eslint-disable-next-line import/no-anonymous-default-export */
+// TODO: switch to named exports in the next major version
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   findAsync: findUnusedVarsAsync,
   find: findUnusedVarsSync
