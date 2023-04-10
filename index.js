@@ -58,10 +58,8 @@ const parseFileSync = (file, options) => {
 };
 
 const parseData = (fileName, sassFileString, options) => {
-  // Remove jekyll comments
-  if (sassFileString.includes('---')) {
-    sassFileString = sassFileString.replace(/---/g, '');
-  }
+  // Remove (Jekyll, YAML) front-matter comments
+  sassFileString = sassFileString.replace(/^---$/gm, '');
 
   const variables = parse(fileName, sassFileString, options.ignore);
 
