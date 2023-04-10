@@ -10,6 +10,7 @@ const globP = promisify(glob);
 
 const defaultOptions = {
   ignore: [],
+  ignoreFiles: [],
   fileExtensions: ['scss']
 };
 
@@ -17,7 +18,10 @@ const findUnusedVarsAsync = async(strDir, opts) => {
   const options = parseOptions(opts);
   const dir = await sanitizeDirAsync(strDir);
   // Array of all Sass files
-  const sassFiles = await globP(path.join(dir, `**/*.${options.fileExtensions}`));
+  const sassFiles = await globP(
+    path.join(dir, `**/*.${options.fileExtensions}`),
+    { ignore: options.ignoreFiles }
+  );
 
   const executions = sassFiles.map(file => parseFileAsync(file, options));
   // String of all Sass files' content
@@ -29,7 +33,10 @@ const findUnusedVarsSync = (strDir, opts) => {
   const options = parseOptions(opts);
   const dir = sanitizeDirSync(strDir);
   // Array of all Sass files
-  const sassFiles = glob.sync(path.join(dir, `**/*.${options.fileExtensions}`));
+  const sassFiles = glob.sync(
+    path.join(dir, `**/*.${options.fileExtensions}`),
+    { ignore: options.ignoreFiles }
+  );
 
   const sassFilesString = sassFiles.map(file => parseFileSync(file, options));
 
@@ -89,8 +96,14 @@ const parseOptions = opts => {
     throw new TypeError('`ignore` should be an Array');
   }
 
+  if (Boolean(options.ignoreFiles) && !Array.isArray(options.ignoreFiles)) {
+    throw new TypeError('`ignoreFiles` should be an Array');
+  }
+
   // Trim list of ignored variables
   options.ignore = options.ignore.map(val => val.trim());
+  // Trim list of ignored files
+  options.ignoreFiles = options.ignoreFiles.map(val => val.trim());
 
   let extensions = options.fileExtensions;
 
