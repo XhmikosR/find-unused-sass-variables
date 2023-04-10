@@ -58,7 +58,7 @@ const parseFileSync = (file, options) => {
 };
 
 const parseData = (fileName, sassFileString, options) => {
-  // Remove jekyll comments
+  // Remove Jekyll front-matter comments
   if (sassFileString.includes('---')) {
     sassFileString = sassFileString.replace(/^---$/gm, '');
   }
