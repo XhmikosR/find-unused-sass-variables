@@ -100,6 +100,7 @@ const parseOptions = opts => {
   extensions = Array.isArray(extensions) ? extensions : [extensions];
   // Replace possible fullstop prefix
   extensions = extensions.map(ext => ext.startsWith('.') ? ext.slice(1) : ext);
+  // The following is glob-specific syntax
   options.fileExtensions = extensions.length > 1 ? `+(${extensions.join('|')})` : extensions;
 
   return options;
@@ -108,6 +109,7 @@ const parseOptions = opts => {
 const sanitizeDirAsync = async strDir => {
   const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
   const stat = await fs.promises.lstat(dir);
+
   return checkDir(stat, dir);
 };
 
