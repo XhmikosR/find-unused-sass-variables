@@ -42,7 +42,8 @@
     "glob": "^7.2.3",
     "picocolors": "^1.0.0",
     "postcss": "^8.4.23",
-    "postcss-scss": "^4.0.6"
+    "postcss-scss": "^4.0.6",
+    "strip-bom": "^5.0.0"
   },
   "devDependencies": {
     "npm-run-all2": "^5.0.2",

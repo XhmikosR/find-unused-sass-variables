@@ -3,6 +3,7 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import glob from 'glob';
 import escapeRegex from 'escape-string-regexp';
+import stripBom from 'strip-bom';
 import parse from './lib/parse-variable.js';
 
 const globP = promisify(glob);
@@ -58,8 +59,8 @@ const parseFileSync = (file, options) => {
 };
 
 const parseData = (fileName, sassFileString, options) => {
-  // Remove (Jekyll, YAML) front-matter comments
-  sassFileString = sassFileString.replace(/^---$/gm, '');
+  sassFileString = stripBom(sassFileString) // Strip BOM mark
+    .replace(/^---$/gm, ''); // Remove (Jekyll, YAML) front-matter comments
 
   const variables = parse(fileName, sassFileString, options.ignore);
 
