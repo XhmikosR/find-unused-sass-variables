@@ -24,7 +24,7 @@ const runTests = (type, result) => {
     throw new Error(
       `Expected ${expectedUnused.length} unused variables and got ${result.unused.length}.\n` +
       `Expected: ${expectedUnused.join(', ')}\n` +
-      `Got: ${result.unused.join(', ')}`
+      `Got: ${JSON.stringify(result, null, 2)}`
     );
   }
 };
