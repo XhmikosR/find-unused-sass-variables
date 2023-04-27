@@ -14,7 +14,7 @@ const defaultOptions = {
   fileExtensions: ['scss']
 };
 
-const findUnusedVarsAsync = async(strDir, opts) => {
+const findAsync = async(strDir, opts = {}) => {
   const options = parseOptions(opts);
   const dir = await sanitizeDirAsync(strDir);
   // Array of all Sass files
@@ -29,7 +29,7 @@ const findUnusedVarsAsync = async(strDir, opts) => {
   return makeResults(sassFilesString);
 };
 
-const findUnusedVarsSync = (strDir, opts) => {
+const findSync = (strDir, opts = {}) => {
   const options = parseOptions(opts);
   const dir = sanitizeDirSync(strDir);
   // Array of all Sass files
@@ -89,7 +89,7 @@ const filterVariables = (sassFilesString, variables) => {
   };
 };
 
-const parseOptions = opts => {
+const parseOptions = (opts = {}) => {
   const options = { ...defaultOptions, ...opts };
 
   if (Boolean(options.ignore) && !Array.isArray(options.ignore)) {
@@ -138,8 +138,7 @@ function checkDir(stat, dir) {
   return dir;
 }
 
-/* eslint-disable-next-line import/no-anonymous-default-export */
-export default {
-  findAsync: findUnusedVarsAsync,
-  find: findUnusedVarsSync
+export {
+  findSync as find,
+  findAsync
 };

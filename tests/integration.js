@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import process from 'node:process';
-import fusv from '../index.js';
+import { find, findAsync } from '../index.js';
 
 const expectedUnused = [
   '$a',
@@ -31,7 +31,7 @@ const runTests = (type, result) => {
 };
 
 try {
-  const result = fusv.find('./tests/', { ignore, ignoreFiles });
+  const result = find('./tests/', { ignore, ignoreFiles });
   runTests('sync', result);
 } catch (error) {
   console.error(error);
@@ -40,7 +40,7 @@ try {
 
 (async() => {
   try {
-    const result = await fusv.findAsync('./tests/', { ignore, ignoreFiles });
+    const result = await findAsync('./tests/', { ignore, ignoreFiles });
     runTests('async', result);
   } catch (error) {
     console.error(error);

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import process from 'node:process';
-import fusv from '../index.js';
+import { findAsync } from '../index.js';
 
 const allExpectedUnused = [
   '$a',
@@ -26,7 +26,7 @@ const ignoreFiles = ['**/ignored-file*.scss'];
 console.log('Running "Options" tests...');
 
 const runTests = async(description, dir, options, expectedUnused) => {
-  const result = await fusv.findAsync(dir, options);
+  const result = await findAsync(dir, options);
 
   try {
     console.log(`Running, ${description}...`);

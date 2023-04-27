@@ -5,7 +5,7 @@ import process from 'node:process';
 import path from 'node:path';
 import { program } from 'commander';
 import picocolors from 'picocolors';
-import fusv from './index.js';
+import { findAsync } from './index.js';
 
 const { version } = JSON.parse(await fs.readFile(new URL('package.json', import.meta.url)));
 
@@ -43,7 +43,7 @@ async function main() {
 
 const executeForPath = async(arg, options) => {
   const dir = path.resolve(arg);
-  const unusedVars = await fusv.findAsync(dir, options);
+  const unusedVars = await findAsync(dir, options);
   const unusedVarsNumber = unusedVars.unused.length;
 
   console.log(`\nSearching for unused variables in "${picocolors.cyan(dir)}" folder, ${picocolors.cyan(options.fileExtensions.join(', '))} files...`);

@@ -22,10 +22,10 @@ fusv folder [, folder2...] --ignore "$my-var,$my-second-var" -e scss -e css --ig
 ## API
 
 ```js
-import fusv from 'find-unused-sass-variables';
+import { findAsync, find } from 'find-unused-sass-variables';
 
 // 'directory' is a folder
-const unused = fusv.find('directory');
+const unused = find('directory');
 // Array of unused variables
 console.log(unused.unused);
 // Array<{ name: string, line: string, file: string }>
@@ -48,7 +48,7 @@ console.log(unused.total);
 ```js
 // Ignoring variables
 const ignoredVars = ['$my-var', '$my-second-var'];
-const unused = fusv.find('directory', { ignore: ignoredVars });
+const unused = find('directory', { ignore: ignoredVars });
 ```
 
 ```js
@@ -59,15 +59,15 @@ const unused = fusv.find('directory', { ignoreFiles });
 
 ```js
 // Specifying file extensions
-const unused = fusv.find('directory', { fileExtensions: ['css','scss']});
+const unused = find('directory', { fileExtensions: ['css','scss']});
 ```
 
 ```js
 // Asynchronous usage
-let unused = await fusv.findAsync('directory');
+let unused = await findAsync('directory');
 
 // or like a Promise
-unused = fusv.findAsync('directory').then(result => {
+unused = findAsync('directory').then(result => {
   console.log(unused.unused);
 });
 ```
