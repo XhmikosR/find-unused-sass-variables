@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import process from 'node:process';
 import { find, findAsync } from '../index.js';
 
 const expectedUnused = [
@@ -12,7 +11,6 @@ const expectedUnused = [
   '$nestNestedVar',
   '$enabled-variable'
 ];
-
 const ignore = ['$ignored-variable'];
 const ignoreFiles = ['**/ignored-file*.scss'];
 
@@ -30,20 +28,8 @@ const runTests = (type, result) => {
   }
 };
 
-try {
-  const result = find('./tests/', { ignore, ignoreFiles });
-  runTests('sync', result);
-} catch (error) {
-  console.error(error);
-  process.exit(1);
-}
+const resultSync = find('./tests/', { ignore, ignoreFiles });
+runTests('sync', resultSync);
 
-(async() => {
-  try {
-    const result = await findAsync('./tests/', { ignore, ignoreFiles });
-    runTests('async', result);
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
-  }
-})();
+const resultAsync = await findAsync('./tests/', { ignore, ignoreFiles });
+runTests('async', resultAsync);
