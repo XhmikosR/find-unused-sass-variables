@@ -14,6 +14,7 @@ const expectedUnused = [
 ];
 
 const ignore = ['$ignored-variable'];
+const ignoreFiles = ['**/ignored-file*.scss'];
 
 const runTests = (type, result) => {
   console.log(`Running ${type} integration tests...`);
@@ -30,7 +31,7 @@ const runTests = (type, result) => {
 };
 
 try {
-  const result = fusv.find('./tests/', { ignore });
+  const result = fusv.find('./tests/', { ignore, ignoreFiles });
   runTests('sync', result);
 } catch (error) {
   console.error(error);
@@ -39,7 +40,7 @@ try {
 
 (async() => {
   try {
-    const result = await fusv.findAsync('./tests/', { ignore });
+    const result = await fusv.findAsync('./tests/', { ignore, ignoreFiles });
     runTests('async', result);
   } catch (error) {
     console.error(error);

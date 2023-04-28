@@ -21,11 +21,13 @@ const expectedUnused = [
   '$enabled-variable'
 ];
 const ignore = ['$ignored-variable', '$a', '$b'];
+const ignoreFiles = ['**/ignored-file*.scss'];
 
 console.log('Running "Options" tests...');
 
 const runTests = async(description, dir, options, expectedUnused) => {
   const result = await fusv.findAsync(dir, options);
+
   try {
     console.log(`Running, ${description}...`);
     if (result.unused.length === expectedUnused.length) {
@@ -43,10 +45,30 @@ const runTests = async(description, dir, options, expectedUnused) => {
   }
 };
 
-runTests('"ignore" option test', './tests/', { ignore }, expectedUnused);
+runTests(
+  '"ignore" option test',
+  './tests/',
+  { ignore, ignoreFiles },
+  expectedUnused
+);
 
-runTests('"fileExtension" option test with fullstop prefix', './tests/', { fileExtensions: '.scss' }, allExpectedUnused);
+runTests(
+  '"fileExtension" option test with fullstop prefix',
+  './tests/',
+  { ignoreFiles, fileExtensions: '.scss' },
+  allExpectedUnused
+);
 
-runTests('"fileExtensions" option test', './tests/', { fileExtensions: ['css'] }, []);
+runTests(
+  '"fileExtensions" option test',
+  './tests/',
+  { ignoreFiles, fileExtensions: ['css'] },
+  []
+);
 
-runTests('"fileExtensions" option test', './tests/', { fileExtensions: ['css', 'scss'] }, allExpectedUnused);
+runTests(
+  '"fileExtensions" option test',
+  './tests/',
+  { ignoreFiles, fileExtensions: ['css', 'scss'] },
+  allExpectedUnused
+);

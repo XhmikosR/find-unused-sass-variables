@@ -13,14 +13,16 @@ program
   .arguments('[folders]')
   .version(version, '-v, --version')
   .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated', '')
+  .option('-if, --ignoreFiles <ignoredVars>', 'ignore files, comma separated', '')
   .option('-e, --extension [fileTypes...]', 'file extension to search', ['scss'])
   .parse();
 
 async function main() {
   const directories = program.args;
-  const { ignore, extension: fileExtensions } = program.opts();
+  const { ignore, ignoreFiles, extension: fileExtensions } = program.opts();
   const options = {
     ignore: ignore.split(','),
+    ignoreFiles: ignoreFiles.split(','),
     fileExtensions
   };
 
