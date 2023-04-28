@@ -75,10 +75,7 @@ Returns an object with `unused` and `total`. `unused` has the array of unused va
 
 ### findAsync(dir, options)
 
-* as `find(dir, options)`
-
-Returns a Promise which resolves result; is the same as `find(dir, options)` result.
-
+Returns a Promise which resolves result; it returns the as `find(dir, options)`.
 
 #### options.ignore
 
