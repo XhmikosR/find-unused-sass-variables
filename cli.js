@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import process from 'node:process';
 import path from 'node:path';
 import { program } from 'commander';
 import picocolors from 'picocolors';
 import fusv from './index.js';
 
-const { version } = JSON.parse(fs.readFileSync(new URL('package.json', import.meta.url)));
+const { version } = JSON.parse(await fs.readFile(new URL('package.json', import.meta.url)));
 
 program
   .arguments('[folders]')
