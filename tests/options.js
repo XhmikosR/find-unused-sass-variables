@@ -29,7 +29,7 @@ const runTests = async(description, dir, options, expectedUnused) => {
   const result = await findAsync(dir, options);
 
   try {
-    console.log(`Running, ${description}...`);
+    console.log(`Running ${description}...`);
     if (result.unused.length === expectedUnused.length) {
       console.log('Test passed!');
     } else {
