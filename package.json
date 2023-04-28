@@ -15,15 +15,15 @@
     ".": "./index.js"
   },
   "bin": {
-    "find-unused-sass-variables": "./cli.js",
-    "fusv": "./cli.js"
+    "find-unused-sass-variables": "./bin/cli.js",
+    "fusv": "./bin/cli.js"
   },
   "scripts": {
     "xo": "xo",
     "lint": "xo",
     "fix": "xo --fix",
     "test": "npm-run-all --aggregate-output --continue-on-error --parallel --parallel test:*",
-    "test:cli": "node ./cli.js tests/ --ignore=\"$a,$b\" --ignoreFiles=\"**/ignored-file*.scss\"",
+    "test:cli": "node ./bin/cli.js tests/ --ignore=\"$a,$b\" --ignoreFiles=\"**/ignored-file*.scss\"",
     "test:integration": "node tests/integration.js",
     "test:options": "node tests/options.js",
     "test-ci": "npm-run-all --aggregate-output --continue-on-error --parallel test:integration test:options"
@@ -50,9 +50,9 @@
     "xo": "^0.54.1"
   },
   "files": [
-    "cli.js",
-    "index.js",
-    "lib/parse-variable.js"
+    "bin/cli.js",
+    "lib/parse-variable.js",
+    "index.js"
   ],
   "engines": {
     "node": "^14.14.0 || >=16.0.0"

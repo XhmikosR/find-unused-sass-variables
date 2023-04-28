@@ -5,9 +5,10 @@ import process from 'node:process';
 import path from 'node:path';
 import { program } from 'commander';
 import picocolors from 'picocolors';
-import { findAsync } from './index.js';
+import { findAsync } from '../index.js';
 
-const { version } = JSON.parse(await fs.readFile(new URL('package.json', import.meta.url)));
+const pkg = new URL('../package.json', import.meta.url);
+const { version } = JSON.parse(await fs.readFile(pkg));
 
 program
   .arguments('[folders]')
