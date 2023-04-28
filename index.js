@@ -21,8 +21,8 @@ const findUnusedVarsAsync = async(strDir, opts) => {
 
   const executions = sassFiles.map(file => parseFileAsync(file, options));
   // String of all Sass files' content
-  const sassFilesAsStrings = await Promise.all(executions);
-  return makeResults(sassFilesAsStrings);
+  const sassFilesString = await Promise.all(executions);
+  return makeResults(sassFilesString);
 };
 
 const findUnusedVarsSync = (strDir, opts) => {
@@ -31,16 +31,16 @@ const findUnusedVarsSync = (strDir, opts) => {
   // Array of all Sass files
   const sassFiles = glob.sync(path.join(dir, `**/*.${options.fileExtensions}`));
 
-  const sassFilesAsStrings = sassFiles.map(file => parseFileSync(file, options));
+  const sassFilesString = sassFiles.map(file => parseFileSync(file, options));
 
-  return makeResults(sassFilesAsStrings);
+  return makeResults(sassFilesString);
 };
 
-function makeResults(sassFilesAsStrings) {
+function makeResults(sassFilesString) {
   let variables = [];
   let combinedSassFile = '';
 
-  for (const result of sassFilesAsStrings) {
+  for (const result of sassFilesString) {
     variables = [...variables, ...result.variables];
     combinedSassFile += result.sassFileString;
   }
@@ -58,10 +58,9 @@ const parseFileSync = (file, options) => {
   return parseData(file, sassFileString, options);
 };
 
-const parseData = (fileName, sassFileString, options) => {
-  sassFileString = stripBom(sassFileString) // Strip BOM mark
+const parseData = (fileName, content, options) => {
+  const sassFileString = stripBom(content) // Strip BOM mark
     .replace(/^---$/gm, ''); // Remove (Jekyll, YAML) front-matter comments
-
   const variables = parse(fileName, sassFileString, options.ignore);
 
   return {
@@ -74,7 +73,6 @@ const filterVariables = (sassFilesString, variables) => {
   // Store unused vars from all files and loop through each variable
   const unusedVars = variables.filter(variable => {
     const re = new RegExp(`(${escapeRegex(variable.name)})\\b(?!-)`, 'g');
-
     return sassFilesString.match(re).length === 1;
   });
 
