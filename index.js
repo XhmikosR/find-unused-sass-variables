@@ -92,12 +92,10 @@ const filterVariables = (sassFilesString, variables) => {
 const parseOptions = (opts = {}) => {
   const options = { ...defaultOptions, ...opts };
 
-  if (Boolean(options.ignore) && !Array.isArray(options.ignore)) {
-    throw new TypeError('`ignore` should be an Array');
-  }
-
-  if (Boolean(options.ignoreFiles) && !Array.isArray(options.ignoreFiles)) {
-    throw new TypeError('`ignoreFiles` should be an Array');
+  for (const option of ['ignore', 'ignoreFiles']) {
+    if (!Array.isArray(options[option])) {
+      throw new TypeError(`\`${option}\` should be an Array`);
+    }
   }
 
   // Trim list of ignored variables
