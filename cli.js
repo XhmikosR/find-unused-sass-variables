@@ -18,10 +18,10 @@ program
 
 async function main() {
   const directories = program.args;
-  const programOptions = program.opts();
+  const { ignore, extension: fileExtensions } = program.opts();
   const options = {
-    ignore: programOptions.ignore.split(','),
-    fileExtensions: programOptions.extension
+    ignore: ignore.split(','),
+    fileExtensions
   };
 
   console.log('Looking for unused variables');
