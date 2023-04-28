@@ -4,7 +4,7 @@ import { promisify } from 'node:util';
 import glob from 'glob';
 import escapeRegex from 'escape-string-regexp';
 import stripBom from 'strip-bom';
-import parse from './lib/parse-variable.js';
+import { parse } from './lib/parse-variable.js';
 
 const globP = promisify(glob);
 
