@@ -3,6 +3,25 @@
 import process from 'node:process';
 import fusv from '../index.js';
 
+const allExpectedUnused = [
+  '$a',
+  '$b',
+  '$unused',
+  '$black',
+  '$nestedVar',
+  '$nestNestedVar',
+  '$enabled-variable',
+  '$ignored-variable'
+];
+const expectedUnused = [
+  '$unused',
+  '$black',
+  '$nestedVar',
+  '$nestNestedVar',
+  '$enabled-variable'
+];
+const ignore = ['$ignored-variable', '$a', '$b'];
+
 console.log('Running "Options" tests...');
 
 const runTests = async(description, dir, options, expectedUnused) => {
@@ -23,26 +42,6 @@ const runTests = async(description, dir, options, expectedUnused) => {
     process.exit(1);
   }
 };
-
-const allExpectedUnused = [
-  '$a',
-  '$b',
-  '$unused',
-  '$black',
-  '$nestedVar',
-  '$nestNestedVar',
-  '$enabled-variable',
-  '$ignored-variable'
-];
-
-const expectedUnused = [
-  '$unused',
-  '$black',
-  '$nestedVar',
-  '$nestNestedVar',
-  '$enabled-variable'
-];
-const ignore = ['$ignored-variable', '$a', '$b'];
 
 runTests('"ignore" option test', './tests/', { ignore }, expectedUnused);
 
