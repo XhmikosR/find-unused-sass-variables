@@ -16,7 +16,7 @@ npm install find-unused-sass-variables --save-dev
 ```shell
 find-unused-sass-variables folder [, folder2...] --ignore "$my-var,$my-second-var" -e scss -e css --ignoreFiles file-with-unused-vars.scss
 # or
-fusv folder [, folder2...]
+fusv folder [, folder2...] --ignore "$my-var,$my-second-var" -e scss -e css --ignoreFiles file-with-unused-vars.scss
 ```
 
 ## API
