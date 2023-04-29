@@ -8,28 +8,38 @@ import picocolors from 'picocolors';
 import { findAsync } from '../index.js';
 
 const pkg = new URL('../package.json', import.meta.url);
-const { version } = JSON.parse(await fs.readFile(pkg));
+const { name, version, description } = JSON.parse(await fs.readFile(pkg));
 
 program
-  .arguments('[folders]')
+  .name(name)
+  .argument('<folders>', 'folders to include, space separated')
+  .description(description)
   .version(version, '-v, --version')
-  .option('-i, --ignore <ignoredVars>', 'ignore variables, comma separated', '')
-  .option('-if, --ignoreFiles <ignoredVars>', 'ignore files, comma separated', '')
-  .option('-e, --extension [fileTypes...]', 'file extension to search', ['scss'])
+  .option('-i, --ignore <variables>', 'ignore variables, comma separated', '')
+  .option('-if, --ignoreFiles <files>', 'ignore files, comma separated', '')
+  .option('-e, --extension [types...]', 'file extensions to search', ['scss'])
+  .action((name, options) => {
+    console.log('Looking for unused variables');
+
+    for (const option of ['ignore', 'ignoreFiles']) {
+      options[option] = options[option].split(',');
+    }
+  })
+  .showHelpAfterError()
   .parse();
 
 async function main() {
   const directories = program.args;
   const { ignore, ignoreFiles, extension: fileExtensions } = program.opts();
   const options = {
-    ignore: ignore.split(','),
-    ignoreFiles: ignoreFiles.split(','),
+    ignore,
+    ignoreFiles,
     fileExtensions
   };
 
-  console.log('Looking for unused variables');
-
-  const executions = await Promise.allSettled(directories.map(path => executeForPath(path, options)));
+  const executions = await Promise.allSettled(
+    directories.map(path => executeForPath(path, options))
+  );
   let status = 0;
 
   for (const result of executions) {
@@ -62,10 +72,4 @@ const executeForPath = async(arg, options) => {
   console.log(picocolors.green(`No unused variables found in "${picocolors.cyan(dir)}"!`));
 };
 
-const args = program.args.filter(arg => typeof arg === 'string');
-
-if (args.length > 0) {
-  main();
-} else {
-  program.help();
-}
+main();
