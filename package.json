@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "npm-run-all2": "^6.0.5",
-    "xo": "^0.54.1"
+    "xo": "^0.54.2"
   },
   "files": [
     "bin/cli.js",
