@@ -39,7 +39,7 @@
   "dependencies": {
     "commander": "^10.0.1",
     "escape-string-regexp": "^5.0.0",
-    "glob": "^7.2.3",
+    "glob": "^10.2.2",
     "picocolors": "^1.0.0",
     "postcss": "^8.4.23",
     "postcss-scss": "^4.0.6",
