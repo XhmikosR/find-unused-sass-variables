@@ -96,12 +96,9 @@ const parseOptions = (opts = {}) => {
     if (!Array.isArray(options[option])) {
       throw new TypeError(`\`${option}\` should be an Array`);
     }
-  }
 
-  // Trim list of ignored variables
-  options.ignore = options.ignore.map(val => val.trim());
-  // Trim list of ignored files
-  options.ignoreFiles = options.ignoreFiles.map(val => val.trim());
+    options[option] = options[option].map(value => value.trim());
+  }
 
   let extensions = options.fileExtensions;
 
