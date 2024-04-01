@@ -55,7 +55,7 @@
     "index.js"
   ],
   "engines": {
-    "node": "^14.14.0 || >=16.0.0"
+    "node": ">=18"
   },
   "keywords": [
     "sass",
