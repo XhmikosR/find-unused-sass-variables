@@ -67,7 +67,7 @@ const parseFileSync = (file, options) => {
 
 const parseData = (fileName, content, options) => {
   const sassFileString = stripBom(content) // Strip BOM mark
-    .replace(/^---$/gm, ''); // Remove (Jekyll, YAML) front-matter comments
+    .replaceAll(/^---$/gm, ''); // Remove (Jekyll, YAML) front-matter comments
   const variables = parse(fileName, sassFileString, options.ignore);
 
   return {
