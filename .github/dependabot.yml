@@ -1,6 +1,17 @@
 version: 2
 updates:
-  - package-ecosystem: npm
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: monthly
+      day: monday
+      time: "11:00"
+      timezone: Europe/Athens
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+  - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: monthly
@@ -9,10 +20,8 @@ updates:
       timezone: Europe/Athens
     open-pull-requests-limit: 10
     versioning-strategy: increase
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: monthly
-      day: monday
-      time: "11:00"
-      timezone: Europe/Athens
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
