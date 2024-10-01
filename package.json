@@ -37,10 +37,10 @@
   },
   "homepage": "https://github.com/XhmikosR/find-unused-sass-variables#readme",
   "dependencies": {
-    "commander": "^12.0.0",
+    "commander": "^12.1.0",
     "escape-string-regexp": "^5.0.0",
     "glob": "^7.2.3",
-    "picocolors": "^1.0.1",
+    "picocolors": "^1.1.0",
     "postcss": "^8.4.47",
     "postcss-scss": "^4.0.9",
     "strip-bom": "^5.0.0"
