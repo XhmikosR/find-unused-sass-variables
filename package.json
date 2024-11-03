@@ -46,7 +46,7 @@
     "strip-bom": "^5.0.0"
   },
   "devDependencies": {
-    "npm-run-all2": "^6.2.3",
+    "npm-run-all2": "^7.0.1",
     "xo": "^0.59.3"
   },
   "files": [
