@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { glob, globSync } from 'tinyglobby';
 import escapeRegex from 'escape-string-regexp';
 import slash from 'slash';
 import stripBom from 'strip-bom';
+import { glob, globSync } from 'tinyglobby';
 import { parse } from './lib/parse-variable.js';
 
 const defaultOptions = {
