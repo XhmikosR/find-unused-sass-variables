@@ -44,10 +44,19 @@ jobs:
 
       - name: Run CLI tests
         run: npm run test:cli
-        id: cli_tests
+        id: cli_tests_linux
         continue-on-error: true
+        shell: bash
+        if: "!(startsWith(matrix.os, 'windows')"
+
+      - name: Run CLI tests
+        run: npm run test:cli
+        id: cli_tests_win
+        continue-on-error: true
+        shell: bash
+        if: "(startsWith(matrix.os, 'windows')"
 
       - name: Check CLI tests' status
         shell: bash
         run: |
-          if [[ ${{ steps.cli_tests.outcome }} == "failure" ]]; then exit 0; else exit 1; fi
+          [[ ${{ steps.cli_tests_linux.outcome }} == "failure" || ${{ steps.cli_tests_win.outcome }} == "failure" ]] && exit 0 || exit 1
