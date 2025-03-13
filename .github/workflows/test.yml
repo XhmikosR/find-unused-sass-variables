@@ -47,14 +47,14 @@ jobs:
         id: cli_tests_linux
         continue-on-error: true
         shell: bash
-        if: "!(startsWith(matrix.os, 'windows')"
+        if: "!startsWith(matrix.os, 'windows')"
 
       - name: Run CLI tests
         run: npm run test:cli
         id: cli_tests_win
         continue-on-error: true
         shell: bash
-        if: "(startsWith(matrix.os, 'windows')"
+        if: startsWith(matrix.os, 'windows')
 
       - name: Check CLI tests' status
         shell: bash
