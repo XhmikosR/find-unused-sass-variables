@@ -1,12 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { promisify } from 'node:util';
-import glob from 'glob';
 import escapeRegex from 'escape-string-regexp';
+import slash from 'slash';
 import stripBom from 'strip-bom';
+import { glob, globSync } from 'tinyglobby';
 import { parse } from './lib/parse-variable.js';
-
-const globP = promisify(glob);
 
 const defaultOptions = {
   ignore: [],
@@ -18,8 +16,8 @@ const findAsync = async(strDir, opts = {}) => {
   const options = parseOptions(opts);
   const dir = await sanitizeDirAsync(strDir);
   // Array of all Sass files
-  const sassFiles = await globP(
-    path.join(dir, `**/*.${options.fileExtensions}`),
+  const sassFiles = await glob(
+    slash(path.join(dir, `**/*.${options.fileExtensions}`)),
     { ignore: options.ignoreFiles }
   );
 
@@ -33,8 +31,8 @@ const findSync = (strDir, opts = {}) => {
   const options = parseOptions(opts);
   const dir = sanitizeDirSync(strDir);
   // Array of all Sass files
-  const sassFiles = glob.sync(
-    path.join(dir, `**/*.${options.fileExtensions}`),
+  const sassFiles = globSync(
+    slash(path.join(dir, `**/*.${options.fileExtensions}`)),
     { ignore: options.ignoreFiles }
   );
 
