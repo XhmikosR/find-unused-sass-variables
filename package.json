@@ -47,7 +47,7 @@
     "tinyglobby": "^0.2.12"
   },
   "devDependencies": {
-    "npm-run-all2": "^7.0.2",
+    "npm-run-all2": "^8.0.2",
     "xo": "^0.60.0"
   },
   "files": [
