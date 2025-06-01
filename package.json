@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "npm-run-all2": "^7.0.2",
-    "xo": "^0.60.0"
+    "xo": "^1.0.5"
   },
   "files": [
     "bin/cli.js",
@@ -67,24 +67,25 @@
   "xo": {
     "space": true,
     "rules": {
-      "arrow-body-style": "off",
-      "capitalized-comments": "off",
-      "comma-dangle": [
+      "@stylistic/comma-dangle": [
         "error",
         "never"
       ],
-      "operator-linebreak": [
+      "@stylistic/operator-linebreak": [
         "error",
         "after"
       ],
-      "object-curly-spacing": [
+      "@stylistic/object-curly-spacing": [
         "error",
         "always"
       ],
-      "space-before-function-paren": [
+      "@stylistic/space-before-function-paren": [
         "error",
         "never"
       ],
+      "@stylistic/function-paren-newline": "off",
+      "arrow-body-style": "off",
+      "capitalized-comments": "off",
       "unicorn/prefer-top-level-await": "off",
       "unicorn/prevent-abbreviations": "off"
     }
