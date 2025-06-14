@@ -40,7 +40,7 @@
     "commander": "^12.1.0",
     "escape-string-regexp": "^5.0.0",
     "picocolors": "^1.1.1",
-    "postcss": "^8.5.4",
+    "postcss": "^8.5.5",
     "postcss-scss": "^4.0.9",
     "slash": "^5.1.0",
     "strip-bom": "^5.0.0",
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "npm-run-all2": "^7.0.2",
-    "xo": "^1.0.5"
+    "xo": "^1.1.0"
   },
   "files": [
     "bin/cli.js",
