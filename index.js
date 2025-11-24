@@ -18,7 +18,7 @@ const findAsync = async(strDir, opts = {}) => {
   // Array of all Sass files
   const sassFiles = await glob(
     slash(path.join(dir, `**/*.${options.fileExtensions}`)),
-    { ignore: options.ignoreFiles }
+    { ignore: options.ignoreFiles, expandDirectories: false }
   );
 
   const executions = sassFiles.map(file => parseFileAsync(file, options));
@@ -33,7 +33,7 @@ const findSync = (strDir, opts = {}) => {
   // Array of all Sass files
   const sassFiles = globSync(
     slash(path.join(dir, `**/*.${options.fileExtensions}`)),
-    { ignore: options.ignoreFiles }
+    { ignore: options.ignoreFiles, expandDirectories: false }
   );
 
   const sassFilesString = sassFiles.map(file => parseFileSync(file, options));
