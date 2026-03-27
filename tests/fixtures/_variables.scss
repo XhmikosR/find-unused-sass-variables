@@ -17,3 +17,15 @@ $disabled-variable: #bada55;
 // fusv-enable
 
 $enabled-variable: #b000b5;
+
+:root {
+  --a: 10px;
+  --b: 20px;
+  --black-light: #{$black-light};
+  --black-lightest: #{$black-lightest};
+  --ignored-variable: #ace;
+  // fusv-disable
+  --disabled-variable: #bada55;
+  // fusv-enable
+  --enabled-variable: #101;
+}
