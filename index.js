@@ -114,7 +114,7 @@ const parseOptions = (opts = {}) => {
 
 const sanitizeDirAsync = async strDir => {
   const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
-  const stat = await fs.promises.lstat(dir);
+  const stat = await fs.promises.stat(dir);
 
   return checkDir(stat, dir);
 };
