@@ -22,11 +22,9 @@
     "xo": "xo",
     "lint": "xo",
     "fix": "xo --fix",
-    "test": "npm-run-all --aggregate-output --continue-on-error --parallel --parallel test:*",
-    "test:cli": "node ./bin/cli.js tests/ --ignore=\"$a,$b\" --ignoreFiles=\"**/ignored-file*.scss\"",
-    "test:integration": "node tests/integration.js",
-    "test:options": "node tests/options.js",
-    "test-ci": "npm-run-all --aggregate-output --continue-on-error --parallel test:integration test:options"
+    "uvu": "uvu tests",
+    "test": "npm run lint && npm run uvu",
+    "test:ci": "c8 npm run uvu"
   },
   "repository": {
     "type": "git",
@@ -47,7 +45,8 @@
     "tinyglobby": "^0.2.16"
   },
   "devDependencies": {
-    "npm-run-all2": "^7.0.2",
+    "c8": "^10.1.3",
+    "uvu": "^0.5.6",
     "xo": "^1.2.3"
   },
   "files": [
