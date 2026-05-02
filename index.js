@@ -106,8 +106,13 @@ const parseOptions = (opts = {}) => {
   extensions = Array.isArray(extensions) ? extensions : [extensions];
   // Replace possible fullstop prefix
   extensions = extensions.map(ext => ext.startsWith('.') ? ext.slice(1) : ext);
+  extensions = extensions.filter(ext => ext.length > 0);
+  if (extensions.length === 0) {
+    throw new TypeError('`fileExtensions` must contain at least one non-empty extension');
+  }
+
   // The following is glob-specific syntax
-  options.fileExtensions = extensions.length > 1 ? `+(${extensions.join('|')})` : extensions;
+  options.fileExtensions = extensions.length > 1 ? `+(${extensions.join('|')})` : extensions[0];
 
   return options;
 };
