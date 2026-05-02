@@ -42,11 +42,11 @@ const findSync = (strDir, opts = {}) => {
 };
 
 function makeResults(sassFilesString) {
-  let variables = [];
+  const variables = [];
   let combinedSassFile = '';
 
   for (const result of sassFilesString) {
-    variables = [...variables, ...result.variables];
+    variables.push(...result.variables);
     combinedSassFile += result.sassFileString;
   }
 
