@@ -12,38 +12,37 @@ const { name, version, description } = JSON.parse(await fs.readFile(pkg));
 
 program
   .name(name)
-  .argument('<folders>', 'folders to include, space separated')
+  .argument('<folders...>', 'one or more folders to scan')
   .description(description)
   .version(version, '-v, --version')
   .option('-i, --ignore <variables>', 'ignore variables, comma separated', '')
   .option('-if, --ignoreFiles <files>', 'ignore files, comma separated', '')
   .option('-e, --extension [types...]', 'file extensions to search', ['scss'])
-  .action((name, options) => {
+  .action((folders, options) => {
     console.log('Looking for unused variables');
 
     for (const option of ['ignore', 'ignoreFiles']) {
-      options[option] = options[option].split(',');
+      options[option] = options[option] ? options[option].split(',').filter(Boolean) : [];
     }
+
+    return main(folders, {
+      ignore: options.ignore,
+      ignoreFiles: options.ignoreFiles,
+      fileExtensions: options.extension
+    });
   })
   .showHelpAfterError()
   .parse();
 
-async function main() {
-  const directories = program.args;
-  const { ignore, ignoreFiles, extension: fileExtensions } = program.opts();
-  const options = {
-    ignore,
-    ignoreFiles,
-    fileExtensions
-  };
-
-  const executions = await Promise.allSettled(
-    directories.map(path => executeForPath(path, options))
-  );
+async function main(folders, options) {
   let status = 0;
+  const results = await Promise.allSettled(
+    folders.map(folder => executeForPath(folder, options))
+  );
 
-  for (const result of executions) {
+  for (const result of results) {
     if (result.status === 'rejected') {
+      // TODO: switch to console.error and result.reason.message in the next major version
       console.log(picocolors.red(result.reason));
       status = 1;
     }
@@ -52,24 +51,22 @@ async function main() {
   process.exit(status);
 }
 
-const executeForPath = async(arg, options) => {
-  const dir = path.resolve(arg);
+async function executeForPath(folder, options) {
+  const dir = path.resolve(folder);
   const unusedVars = await findAsync(dir, options);
-  const unusedVarsNumber = unusedVars.unused.length;
+  const unusedCount = unusedVars.unused.length;
 
   console.log(`\nSearching for unused variables in "${picocolors.cyan(dir)}" folder, ${picocolors.cyan(options.fileExtensions.join(', '))} files...`);
 
-  if (unusedVarsNumber > 0) {
-    console.log(`${picocolors.cyan(unusedVars.total)} total variables, ${picocolors.red(unusedVarsNumber)} unused:`);
+  if (unusedCount > 0) {
+    console.log(`${picocolors.cyan(unusedVars.total)} total variables, ${picocolors.red(unusedCount)} unused:`);
     for (const { name, file, line } of unusedVars.unused) {
       console.log(`  - ${picocolors.red(name)} ${picocolors.gray(file)}:${picocolors.cyan(line)}`);
     }
 
-    throw new Error(`Found ${unusedVarsNumber} unused variable${unusedVarsNumber > 1 ? 's' : ''} in "${picocolors.cyan(dir)}" folder`);
+    throw new Error(`Found ${unusedCount} unused variable${unusedCount > 1 ? 's' : ''} in "${picocolors.cyan(dir)}" folder`);
   }
 
   console.log(`${picocolors.cyan(unusedVars.total)} total variables`);
   console.log(picocolors.green(`No unused variables found in "${picocolors.cyan(dir)}"!`));
-};
-
-main();
+}
