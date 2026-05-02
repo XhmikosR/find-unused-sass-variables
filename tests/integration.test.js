@@ -41,12 +41,12 @@ const allExpectedUnused = [
 
 test('find (sync) returns expected unused variable names', () => {
   const result = find('./tests/', { ignore, ignoreFiles });
-  assert.deepEqual(result.unused.map(v => v.name).sort(), expectedUnused);
+  assert.deepEqual(result.unused.map(v => v.name).toSorted(), expectedUnused);
 });
 
 test('findAsync returns expected unused variable names', async() => {
   const result = await findAsync('./tests/', { ignore, ignoreFiles });
-  assert.deepEqual(result.unused.map(v => v.name).sort(), expectedUnused);
+  assert.deepEqual(result.unused.map(v => v.name).toSorted(), expectedUnused);
 });
 
 test('disabled variables are excluded from results', () => {
@@ -62,12 +62,12 @@ test('ignore option filters specified variables', () => {
     ignore: ['$ignored-variable', '$a', '$b'],
     ignoreFiles
   });
-  assert.deepEqual(result.unused.map(v => v.name).sort(), expectedUnusedFiltered);
+  assert.deepEqual(result.unused.map(v => v.name).toSorted(), expectedUnusedFiltered);
 });
 
 test('ignoreFiles option excludes matched files', () => {
   const result = find('./tests/', { ignoreFiles });
-  assert.deepEqual(result.unused.map(v => v.name).sort(), allExpectedUnused);
+  assert.deepEqual(result.unused.map(v => v.name).toSorted(), allExpectedUnused);
   const names = new Set(result.unused.map(v => v.name));
   assert.equal(names.has('$unused-but-ignored'), false);
   assert.equal(names.has('$unused-but-ignored2'), false);
@@ -81,12 +81,12 @@ test('fileExtensions with css finds nothing in scss fixtures', () => {
 
 test('fileExtensions with multiple extensions finds scss vars', () => {
   const result = find('./tests/', { ignoreFiles, fileExtensions: ['css', 'scss'] });
-  assert.deepEqual(result.unused.map(v => v.name).sort(), allExpectedUnused);
+  assert.deepEqual(result.unused.map(v => v.name).toSorted(), allExpectedUnused);
 });
 
 test('fileExtensions with leading dot works', () => {
   const result = find('./tests/', { ignoreFiles, fileExtensions: '.scss' });
-  assert.deepEqual(result.unused.map(v => v.name).sort(), allExpectedUnused);
+  assert.deepEqual(result.unused.map(v => v.name).toSorted(), allExpectedUnused);
 });
 
 test('each unused entry has name, line, and file properties', () => {
