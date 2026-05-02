@@ -87,8 +87,13 @@ const filterVariables = (sassFilesString, variables) => {
   };
 };
 
-const parseOptions = (opts = {}) => {
-  const options = { ...defaultOptions, ...opts };
+function parseOptions(opts) {
+  opts ??= {};
+  const options = {
+    ignore: opts.ignore ?? defaultOptions.ignore,
+    ignoreFiles: opts.ignoreFiles ?? defaultOptions.ignoreFiles,
+    fileExtensions: opts.fileExtensions ?? defaultOptions.fileExtensions
+  };
 
   for (const option of ['ignore', 'ignoreFiles']) {
     if (!Array.isArray(options[option])) {
@@ -115,7 +120,7 @@ const parseOptions = (opts = {}) => {
   options.fileExtensions = extensions.length > 1 ? `+(${extensions.join('|')})` : extensions[0];
 
   return options;
-};
+}
 
 const sanitizeDirAsync = async strDir => {
   const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
