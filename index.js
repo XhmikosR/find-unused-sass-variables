@@ -78,7 +78,7 @@ const filterVariables = (sassFilesString, variables) => {
   // Store unused vars from all files and loop through each variable
   const unusedVars = variables.filter(variable => {
     const re = new RegExp(`(${escapeRegex(variable.name)})\\b(?!-)`, 'g');
-    return sassFilesString.match(re).length === 1;
+    return (sassFilesString.match(re) ?? []).length === 1;
   });
 
   return {
