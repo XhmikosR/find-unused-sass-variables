@@ -86,6 +86,10 @@
       "@stylistic/function-paren-newline": "off",
       "arrow-body-style": "off",
       "capitalized-comments": "off",
+      "curly": [
+        "error",
+        "multi-line"
+      ],
       "unicorn/prefer-top-level-await": "off",
       "unicorn/prevent-abbreviations": "off"
     }
