@@ -28,7 +28,7 @@ One or more folder paths can be passed at once.
 | Flag | Alias | Description | Default |
 |---|---|---|---|
 | `--ignore <variables>` | `-i` | Comma-separated variable names to skip (e.g. `$my-var,$another`) | - |
-| `--ignoreFiles <files>` | `-if` | Comma-separated file glob patterns to skip (e.g. `**/_variables.scss`) | - |
+| `--ignoreFiles <files>` | - | Comma-separated file glob patterns to skip (e.g. `**/_variables.scss`) | - |
 | `--extension [types...]` | `-e` | File extension(s) to scan. Repeatable or comma-separated. | `scss` |
 | `--help` | | Print help | - |
 
