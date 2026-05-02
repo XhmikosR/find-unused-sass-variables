@@ -68,4 +68,15 @@ test('throws TypeError when fileExtensions is an empty array', () => {
   }, TypeError);
 });
 
+
+test('find accepts null opts without throwing', () => {
+  const result = find(fixturesDir, null);
+  assert.equal(result.total, 2);
+});
+
+test('find accepts undefined opts without throwing', () => {
+  const result = find(fixturesDir, undefined);
+  assert.equal(result.total, 2);
+});
+
 test.run();
