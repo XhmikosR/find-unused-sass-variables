@@ -9,8 +9,9 @@ test('returns declared variables', () => {
 $a: 1px;
 $b: 2px;
 `;
-  const variables = parse('f.scss', scss, []);
-  assert.deepEqual(variables.map(v => v.name), ['$a', '$b']);
+  const result = parse('f.scss', scss, []);
+  const expected = ['$a', '$b'];
+  assert.deepEqual(result.variables.map(v => v.name), expected);
 });
 
 test('returns correct line numbers', () => {
@@ -18,14 +19,14 @@ test('returns correct line numbers', () => {
 $a: 1px;
 $b: 2px;
 `;
-  const variables = parse('f.scss', scss, []);
-  assert.equal(variables[0].line, 2);
-  assert.equal(variables[1].line, 3);
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.variables[0].line, 2);
+  assert.equal(result.variables[1].line, 3);
 });
 
 test('returns correct file name', () => {
-  const variables = parse('my-file.scss', '$a: 1px;', []);
-  assert.equal(variables[0].file, 'my-file.scss');
+  const result = parse('my-file.scss', '$a: 1px;', []);
+  assert.equal(result.variables[0].file, 'my-file.scss');
 });
 
 test('excludes variables in ignoreList', () => {
@@ -33,17 +34,19 @@ test('excludes variables in ignoreList', () => {
 $a: 1px;
 $b: 2px;
 `;
-  const variables = parse('f.scss', scss, ['$a']);
-  assert.deepEqual(variables.map(v => v.name), ['$b']);
+  const result = parse('f.scss', scss, ['$a']);
+  const expected = ['$b'];
+  assert.deepEqual(result.variables.map(v => v.name), expected);
 });
 
-test('ignores non-variable declarations', () => {
+test('ignores non-variable variables', () => {
   const scss = `
 .foo { color: red; }
 $a: 1px;
 `;
-  const variables = parse('f.scss', scss, []);
-  assert.deepEqual(variables.map(v => v.name), ['$a']);
+  const result = parse('f.scss', scss, []);
+  const expected = ['$a'];
+  assert.deepEqual(result.variables.map(v => v.name), expected);
 });
 
 test('fusv-disable with inline // comment suppresses variables', () => {
@@ -54,8 +57,9 @@ $y: 2px;
 // fusv-enable
 $z: 3px;
 `;
-  const variables = parse('f.scss', scss, []);
-  assert.deepEqual(variables.map(v => v.name), ['$x', '$z']);
+  const result = parse('f.scss', scss, []);
+  const expected = ['$x', '$z'];
+  assert.deepEqual(result.variables.map(v => v.name), expected);
 });
 
 test('fusv-disable with block /* */ comment suppresses variables', () => {
@@ -66,8 +70,9 @@ $y: 2px;
 /* fusv-enable */
 $z: 3px;
 `;
-  const variables = parse('f.scss', scss, []);
-  assert.deepEqual(variables.map(v => v.name), ['$x', '$z']);
+  const result = parse('f.scss', scss, []);
+  const expected = ['$x', '$z'];
+  assert.deepEqual(result.variables.map(v => v.name), expected);
 });
 
 test('fusv-enable state resets between parse() calls', () => {
@@ -77,8 +82,9 @@ $x: 1px;
 $y: 2px;
 `;
   parse('f1.scss', scss, []);
-  const variables = parse('f2.scss', '$z: 3px;', []);
-  assert.deepEqual(variables.map(v => v.name), ['$z']);
+  const result = parse('f2.scss', '$z: 3px;', []);
+  const expected = ['$z'];
+  assert.deepEqual(result.variables.map(v => v.name), expected);
 });
 
 test('finds variables nested inside rules', () => {
@@ -87,8 +93,214 @@ test('finds variables nested inside rules', () => {
   $nested: red;
 }
 `;
-  const variables = parse('f.scss', scss, []);
-  assert.deepEqual(variables.map(v => v.name), ['$nested']);
+  const result = parse('f.scss', scss, []);
+  const expected = ['$nested'];
+  assert.deepEqual(result.variables.map(v => v.name), expected);
+});
+
+test('variable name in a comment does not appear in usages', () => {
+  const scss = `
+$a: 1px;
+// $a is the spacing token
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$a'), false);
+});
+
+test('variable used in interpolated property name counts as used', () => {
+  const scss = `
+$prefix: bs-;
+$css-variable-name: color;
+.c {
+  --#{$prefix}#{$css-variable-name}: red;
+}
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$prefix'), true);
+  assert.equal(result.usages.has('$css-variable-name'), true);
+});
+
+test('variable used only in declaration value is not double-counted as a variable', () => {
+  const scss = `
+$a: 1px;
+.c {
+  color: $a;
+}
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.variables.length, 1);
+  assert.equal(result.usages.has('$a'), true);
+});
+
+test('mixin parameter name does not pollute usages - global with same name stays unused', () => {
+  const scss = `
+$color: red;
+@mixin themed($color: blue) {
+  font-size: 1px;
+}
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$color'), false);
+});
+
+test('mixin default value counts as a usage', () => {
+  const scss = `
+$default-color: red;
+@mixin themed($color: $default-color) { }
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$color'), false);
+  assert.equal(result.usages.has('$default-color'), true);
+});
+
+test('mixin default value with nested function call counts as a usage', () => {
+  // $opacity is a global used in the default value - must be detected as used.
+  // $color appears in the default of $bg but is itself a parameter, not a global.
+  // $state and $bg are plain parameters with no defaults.
+  const scss = `
+$opacity: 0.5;
+@mixin form-validation-state(
+  $state,
+  $color,
+  $bg: rgba($color, $opacity)
+) { }
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$opacity'), true);
+  assert.equal(result.usages.has('$state'), false);
+  assert.equal(result.usages.has('$bg'), false);
+});
+
+test('function parameter name does not pollute usages', () => {
+  const scss = `
+$x: 10px;
+@function double($x) {
+  @return 1px;
+}
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$x'), false);
+});
+
+test('function default value counts as a usage', () => {
+  const scss = `
+$base: 10px;
+@function scale($x: $base) { }
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$base'), true);
+  assert.equal(result.usages.has('$x'), false);
+});
+
+test('@each loop variable does not pollute usages', () => {
+  const scss = `
+$item: red;
+$list: (a, b, c);
+@each $item in $list {
+  color: green;
+}
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$list'), true);
+  assert.equal(result.usages.has('$item'), false);
+});
+
+test('@each multi-variable loop variables do not pollute usages', () => {
+  const scss = `
+$key: x;
+$val: y;
+$map: (a: 1, b: 2);
+@each $key, $val in $map { }
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$map'), true);
+  assert.equal(result.usages.has('$key'), false);
+  assert.equal(result.usages.has('$val'), false);
+});
+
+test('@for loop variable does not pollute usages', () => {
+  const scss = `
+$i: 0;
+@for $i from 1 through 3 { }
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$i'), false);
+});
+
+test('@for bound variables count as usages', () => {
+  const scss = `
+$start: 1;
+$end: 10;
+@for $i from $start through $end { }
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$i'), false);
+  assert.equal(result.usages.has('$start'), true);
+  assert.equal(result.usages.has('$end'), true);
+});
+
+test('fusv-disable inside a nested rule suppresses variables', () => {
+  const scss = `
+$outer: red;
+.foo {
+  // fusv-disable
+  $inner: blue;
+  // fusv-enable
+}
+$after: green;
+`;
+  const result = parse('f.scss', scss, []);
+  assert.deepEqual(result.variables.map(v => v.name), ['$outer', '$after']);
+});
+
+test('fusv-disable without fusv-enable suppresses until end of file', () => {
+  const scss = `
+$before: red;
+// fusv-disable
+$suppressed: blue;
+`;
+  const result = parse('f.scss', scss, []);
+  assert.deepEqual(result.variables.map(v => v.name), ['$before']);
+});
+
+test('variable used in @warn counts as a usage', () => {
+  const result = parse('f.scss', '@warn $msg;', []);
+  assert.equal(result.usages.has('$msg'), true);
+});
+
+test('variable used in @error counts as a usage', () => {
+  const result = parse('f.scss', '@error $msg;', []);
+  assert.equal(result.usages.has('$msg'), true);
+});
+
+test('variable used in @debug counts as a usage', () => {
+  const result = parse('f.scss', '@debug $val;', []);
+  assert.equal(result.usages.has('$val'), true);
+});
+
+test('@mixin with no argument list does not throw', () => {
+  const result = parse('f.scss', '@mixin foo { color: red; }', []);
+  assert.equal(result.variables.length, 0);
+  assert.equal(result.usages.size, 0);
+});
+
+test('@each with no "in" keyword does not throw', () => {
+  const result = parse('f.scss', '@each $item { }', []);
+  assert.equal(result.usages.has('$item'), false);
+});
+
+test('variable used in @forward params counts as a usage', () => {
+  const result = parse('f.scss', '@forward \'vars\' show $color;', []);
+  assert.equal(result.usages.has('$color'), true);
+});
+
+test('variable with !default referencing another variable counts as a usage', () => {
+  const scss = `
+$y: blue;
+$x: $y !default;
+`;
+  const result = parse('f.scss', scss, []);
+  assert.equal(result.usages.has('$y'), true);
 });
 
 test.run();

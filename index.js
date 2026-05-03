@@ -1,10 +1,10 @@
 import { readFileSync, statSync } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
-import escapeRegex from 'escape-string-regexp';
 import slash from 'slash';
 import stripBom from 'strip-bom';
 import { glob, globSync } from 'tinyglobby';
+import { aggregateResults } from './lib/filter.js';
 import { parse } from './lib/parse-variable.js';
 
 const defaultOptions = {
@@ -58,18 +58,6 @@ function findSync(dirPath, opts = {}) {
   return aggregateResults(parsedFiles);
 }
 
-function aggregateResults(parsedFiles) {
-  const variables = [];
-  let combinedContent = '';
-
-  for (const result of parsedFiles) {
-    variables.push(...result.variables);
-    combinedContent += result.fileContent;
-  }
-
-  return filterVariables(combinedContent, variables);
-}
-
 async function parseFileAsync(file, options) {
   const content = await readFile(file, 'utf8');
   return parseFileContent(file, content, options.ignore);
@@ -83,24 +71,8 @@ function parseFileSync(file, options) {
 function parseFileContent(fileName, content, ignoreList) {
   const fileContent = stripBom(content) // Strip BOM mark
     .replaceAll(/^---$/gm, ''); // Remove (Jekyll, YAML) front-matter comments
-  const variables = parse(fileName, fileContent, ignoreList);
 
-  return {
-    fileContent,
-    variables
-  };
-}
-
-function filterVariables(combinedContent, variables) {
-  const unusedVars = variables.filter(variable => {
-    const re = new RegExp(`(${escapeRegex(variable.name)})\\b(?!-)`, 'g');
-    return (combinedContent.match(re) ?? []).length === 1;
-  });
-
-  return {
-    unused: unusedVars,
-    total: variables.length
-  };
+  return parse(fileName, fileContent, ignoreList);
 }
 
 function parseOptions(opts) {
