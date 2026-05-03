@@ -100,4 +100,14 @@ test('each unused entry has name, line, and file properties', () => {
   }
 });
 
+test('variable declared in one file but used in another is not flagged', () => {
+  // $white, $black-light, $black-lightest are declared in _variables.scss
+  // and used in test.scss - they must not appear in unused
+  const result = find('./tests/', { ignore, ignoreFiles });
+  const unusedNames = new Set(result.unused.map(v => v.name));
+  assert.equal(unusedNames.has('$white'), false);
+  assert.equal(unusedNames.has('$black-light'), false);
+  assert.equal(unusedNames.has('$black-lightest'), false);
+});
+
 test.run();

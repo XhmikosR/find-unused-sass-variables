@@ -36,7 +36,6 @@
   "homepage": "https://github.com/XhmikosR/find-unused-sass-variables#readme",
   "dependencies": {
     "commander": "^12.1.0",
-    "escape-string-regexp": "^5.0.0",
     "picocolors": "^1.1.1",
     "postcss": "^8.5.13",
     "postcss-scss": "^4.0.9",
@@ -49,7 +48,7 @@
   },
   "files": [
     "bin/cli.js",
-    "lib/parse-variable.js",
+    "lib/*.js",
     "index.js"
   ],
   "engines": {
