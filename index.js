@@ -1,4 +1,5 @@
-import fs from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
+import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import escapeRegex from 'escape-string-regexp';
 import slash from 'slash';
@@ -12,80 +13,95 @@ const defaultOptions = {
   fileExtensions: ['scss']
 };
 
-const findAsync = async(strDir, opts = {}) => {
-  const options = parseOptions(opts);
-  const dir = await sanitizeDirAsync(strDir);
-  // Array of all Sass files
-  const sassFiles = await glob(
-    slash(path.join(dir, `**/*.${options.fileExtensions}`)),
-    { ignore: options.ignoreFiles, expandDirectories: false }
-  );
-
-  const executions = sassFiles.map(file => parseFileAsync(file, options));
-  // String of all Sass files' content
-  const sassFilesString = await Promise.all(executions);
-  return makeResults(sassFilesString);
-};
-
-const findSync = (strDir, opts = {}) => {
-  const options = parseOptions(opts);
-  const dir = sanitizeDirSync(strDir);
-  // Array of all Sass files
-  const sassFiles = globSync(
-    slash(path.join(dir, `**/*.${options.fileExtensions}`)),
-    { ignore: options.ignoreFiles, expandDirectories: false }
-  );
-
-  const sassFilesString = sassFiles.map(file => parseFileSync(file, options));
-
-  return makeResults(sassFilesString);
-};
-
-function makeResults(sassFilesString) {
-  const variables = [];
-  let combinedSassFile = '';
-
-  for (const result of sassFilesString) {
-    variables.push(...result.variables);
-    combinedSassFile += result.sassFileString;
-  }
-
-  return filterVariables(combinedSassFile, variables);
+function buildGlobPattern(dir, options) {
+  return slash(path.join(dir, `**/*.${options.fileExtensions}`));
 }
 
-const parseFileAsync = async(file, options) => {
-  const sassFileString = await fs.promises.readFile(file, 'utf8');
-  return parseData(file, sassFileString, options);
-};
+async function findAsync(dirPath, opts = {}) {
+  const options = parseOptions(opts);
+  const dir = path.resolve(dirPath);
+  const dirStat = await stat(dir);
 
-const parseFileSync = (file, options) => {
-  const sassFileString = fs.readFileSync(file, 'utf8');
-  return parseData(file, sassFileString, options);
-};
+  if (!dirStat.isDirectory()) {
+    throw new Error(`"${dir}": Not a valid directory!`);
+  }
 
-const parseData = (fileName, content, options) => {
-  const sassFileString = stripBom(content) // Strip BOM mark
+  // Array of all Sass files
+  const sassFiles = await glob(
+    buildGlobPattern(dir, options),
+    { ignore: options.ignoreFiles, expandDirectories: false }
+  );
+
+  const parsePromises = sassFiles.map(file => parseFileAsync(file, options));
+  // Parsed content and variables from each file
+  const parsedFiles = await Promise.all(parsePromises);
+  return aggregateResults(parsedFiles);
+}
+
+function findSync(dirPath, opts = {}) {
+  const options = parseOptions(opts);
+  const dir = path.resolve(dirPath);
+  const dirStat = statSync(dir);
+
+  if (!dirStat.isDirectory()) {
+    throw new Error(`"${dir}": Not a valid directory!`);
+  }
+
+  // Array of all Sass files
+  const sassFiles = globSync(
+    buildGlobPattern(dir, options),
+    { ignore: options.ignoreFiles, expandDirectories: false }
+  );
+
+  const parsedFiles = sassFiles.map(file => parseFileSync(file, options));
+
+  return aggregateResults(parsedFiles);
+}
+
+function aggregateResults(parsedFiles) {
+  const variables = [];
+  let combinedContent = '';
+
+  for (const result of parsedFiles) {
+    variables.push(...result.variables);
+    combinedContent += result.fileContent;
+  }
+
+  return filterVariables(combinedContent, variables);
+}
+
+async function parseFileAsync(file, options) {
+  const content = await readFile(file, 'utf8');
+  return parseFileContent(file, content, options.ignore);
+}
+
+function parseFileSync(file, options) {
+  const content = readFileSync(file, 'utf8');
+  return parseFileContent(file, content, options.ignore);
+}
+
+function parseFileContent(fileName, content, ignoreList) {
+  const fileContent = stripBom(content) // Strip BOM mark
     .replaceAll(/^---$/gm, ''); // Remove (Jekyll, YAML) front-matter comments
-  const variables = parse(fileName, sassFileString, options.ignore);
+  const variables = parse(fileName, fileContent, ignoreList);
 
   return {
-    sassFileString,
+    fileContent,
     variables
   };
-};
+}
 
-const filterVariables = (sassFilesString, variables) => {
-  // Store unused vars from all files and loop through each variable
+function filterVariables(combinedContent, variables) {
   const unusedVars = variables.filter(variable => {
     const re = new RegExp(`(${escapeRegex(variable.name)})\\b(?!-)`, 'g');
-    return (sassFilesString.match(re) ?? []).length === 1;
+    return (combinedContent.match(re) ?? []).length === 1;
   });
 
   return {
     unused: unusedVars,
     total: variables.length
   };
-};
+}
 
 function parseOptions(opts) {
   opts ??= {};
@@ -120,28 +136,6 @@ function parseOptions(opts) {
   options.fileExtensions = extensions.length > 1 ? `+(${extensions.join('|')})` : extensions[0];
 
   return options;
-}
-
-const sanitizeDirAsync = async strDir => {
-  const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
-  const stat = await fs.promises.stat(dir);
-
-  return checkDir(stat, dir);
-};
-
-const sanitizeDirSync = strDir => {
-  const dir = path.isAbsolute(strDir) ? strDir : path.resolve(strDir);
-  const stat = fs.statSync(dir);
-
-  return checkDir(stat, dir);
-};
-
-function checkDir(stat, dir) {
-  if (!stat.isDirectory()) {
-    throw new Error(`"${dir}": Not a valid directory!`);
-  }
-
-  return dir;
 }
 
 export {
