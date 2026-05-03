@@ -75,6 +75,16 @@ test('throws TypeError when fileExtensions is an empty array', () => {
   }, TypeError);
 });
 
+test('throws TypeError when fileExtensions contains only blank strings', () => {
+  assert.throws(() => {
+    find(fixturesDir, { fileExtensions: ['  '] });
+  }, TypeError);
+});
+
+test('fileExtensions with surrounding whitespace is trimmed and works', () => {
+  const result = find(fixturesDir, { fileExtensions: [' scss '] });
+  assert.equal(result.total, 2);
+});
 
 test('find accepts null opts without throwing', () => {
   const result = find(fixturesDir, null);

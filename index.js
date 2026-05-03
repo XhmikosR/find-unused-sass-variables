@@ -125,9 +125,14 @@ function parseOptions(opts) {
   let extensions = options.fileExtensions;
 
   extensions = Array.isArray(extensions) ? extensions : [extensions];
-  // Replace possible fullstop prefix
-  extensions = extensions.map(ext => ext.startsWith('.') ? ext.slice(1) : ext);
-  extensions = extensions.filter(ext => ext.length > 0);
+  // Trim, strip a leading dot, and drop blanks
+  extensions = extensions
+    .map(extension => {
+      const trimmed = extension.trim();
+      return trimmed.startsWith('.') ? trimmed.slice(1) : trimmed;
+    })
+    .filter(Boolean);
+
   if (extensions.length === 0) {
     throw new TypeError('`fileExtensions` must contain at least one non-empty extension');
   }
