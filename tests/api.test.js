@@ -28,9 +28,16 @@ test('throws when directory does not exist', async() => {
   );
 });
 
-test('throws when path is a file not a directory', async() => {
+test('throws when path is a file not a directory (async)', async() => {
   await assert.rejects(
     () => findAsync('./index.js'),
+    { message: /Not a valid directory/ }
+  );
+});
+
+test('throws when path is a file not a directory (sync)', () => {
+  assert.throws(
+    () => find('./index.js'),
     { message: /Not a valid directory/ }
   );
 });
