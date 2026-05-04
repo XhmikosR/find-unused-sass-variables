@@ -1,7 +1,8 @@
 export default [
   {
     ignores: [
-      'test/fixtures/**'
+      'test/fixtures/**',
+      'types/**'
     ]
   },
   {

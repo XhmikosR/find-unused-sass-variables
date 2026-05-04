@@ -10,9 +10,13 @@
   ],
   "license": "MIT",
   "main": "index.js",
+  "types": "types/index.d.ts",
   "type": "module",
   "exports": {
-    ".": "./index.js"
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./index.js"
+    }
   },
   "bin": {
     "find-unused-sass-variables": "./bin/cli.js",
@@ -22,8 +26,9 @@
     "xo": "xo",
     "lint": "xo",
     "fix": "xo --fix",
+    "types": "tsc",
     "uvu": "uvu tests",
-    "test": "npm run lint && npm run uvu",
+    "test": "npm run types && npm run lint && npm run uvu",
     "test:ci": "c8 npm run uvu"
   },
   "repository": {
@@ -45,13 +50,15 @@
   },
   "devDependencies": {
     "c8": "^11.0.0",
+    "typescript": "^5.9.3",
     "uvu": "^0.5.6",
     "xo": "^2.0.2"
   },
   "files": [
     "bin/cli.js",
     "lib/*.js",
-    "index.js"
+    "index.js",
+    "types/index.d.ts"
   ],
   "engines": {
     "node": ">=20"

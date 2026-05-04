@@ -7,6 +7,26 @@ import { glob, globSync } from 'tinyglobby';
 import { aggregateResults } from './lib/filter.js';
 import { parse } from './lib/parse-variable.js';
 
+/**
+ * @typedef {Object} Options
+ * @property {string[]} [ignore] Array of variable names to ignore, e.g. `['$my-var', '$my-second-var']`. Defaults to `[]`.
+ * @property {string[]} [ignoreFiles] Array of file globs to ignore, e.g. `['./file.scss', '**\/_variables.scss']`. Defaults to `[]`.
+ * @property {string|string[]} [fileExtensions] File extensions to search. Defaults to `['scss']`.
+ */
+
+/**
+ * @typedef {Object} Variable
+ * @property {string} name
+ * @property {string} file
+ * @property {number} line
+ */
+
+/**
+ * @typedef {Object} Result
+ * @property {readonly Variable[]} unused The array of unused variables.
+ * @property {number} total The sum of all variables in the files (unused and used ones).
+ */
+
 const defaultOptions = {
   ignore: [],
   ignoreFiles: [],
@@ -17,6 +37,12 @@ function buildGlobPattern(dir, options) {
   return slash(path.join(dir, `**/*.${options.fileExtensions}`));
 }
 
+/**
+ * Returns a Promise which resolves to a `Result`; equivalent to `find(dir, options)`.
+ * @param {string} dirPath
+ * @param {Options} [opts]
+ * @returns {Promise<Result>}
+ */
 async function findAsync(dirPath, opts = {}) {
   const options = parseOptions(opts);
   const dir = path.resolve(dirPath);
@@ -38,6 +64,12 @@ async function findAsync(dirPath, opts = {}) {
   return aggregateResults(parsedFiles);
 }
 
+/**
+ * Returns a `Result` object with `unused` (array of unused variables) and `total` (all variables found).
+ * @param {string} dirPath
+ * @param {Options} [opts]
+ * @returns {Result}
+ */
 function findSync(dirPath, opts = {}) {
   const options = parseOptions(opts);
   const dir = path.resolve(dirPath);
