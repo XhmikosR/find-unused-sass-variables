@@ -9,9 +9,12 @@ const expectedUnused = [
   '$black',
   '$nestedVar',
   '$nestNestedVar',
-  '$enabled-variable'
+  '$enabled-variable',
+  '--a',
+  '--b',
+  '--enabled-variable'
 ];
-const ignore = ['$ignored-variable'];
+const ignore = ['$ignored-variable', '--ignored-variable'];
 const ignoreFiles = ['**/ignored-file*.scss'];
 
 const runTests = (type, result) => {
