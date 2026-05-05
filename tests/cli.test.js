@@ -14,10 +14,13 @@ const TOTAL_UNUSED = 9;
 const TOTAL_UNUSED_WITH_IGNORE = 7;
 
 async function run(...args) {
+  // Disable color in test output for easier assertions
+  const env = { ...process.env, NO_COLOR: '1' };
+
   try {
-    const { stdout, stderr } = await exec(process.execPath, [cli, ...args]);
+    const { stdout, stderr } = await exec(process.execPath, [cli, ...args], { env });
     return { code: 0, stdout, stderr };
-  } catch (error) {
+  } catch(error) {
     return {
       code: error.code,
       stdout: error.stdout ?? '',
@@ -67,10 +70,10 @@ test('--extension with non-matching type exits 0', async() => {
 });
 
 test('reports singular "variable" when exactly one is unused', async() => {
-  const { code, stdout } = await run('tests/fixtures/one-unused/');
+  const { code, stderr } = await run('tests/fixtures/one-unused/');
   assert.equal(code, 1);
-  assert.equal(stdout.includes('Found 1 unused variable '), true);
-  assert.equal(stdout.includes('Found 1 unused variables'), false);
+  assert.equal(stderr.includes('Found 1 unused variable '), true);
+  assert.equal(stderr.includes('Found 1 unused variables'), false);
 });
 
 test('accepts multiple folder arguments', async() => {
