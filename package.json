@@ -62,35 +62,5 @@
     "unused",
     "variables",
     "scss"
-  ],
-  "xo": {
-    "space": true,
-    "rules": {
-      "@stylistic/comma-dangle": [
-        "error",
-        "never"
-      ],
-      "@stylistic/operator-linebreak": [
-        "error",
-        "after"
-      ],
-      "@stylistic/object-curly-spacing": [
-        "error",
-        "always"
-      ],
-      "@stylistic/space-before-function-paren": [
-        "error",
-        "never"
-      ],
-      "@stylistic/function-paren-newline": "off",
-      "arrow-body-style": "off",
-      "capitalized-comments": "off",
-      "curly": [
-        "error",
-        "multi-line"
-      ],
-      "unicorn/prefer-top-level-await": "off",
-      "unicorn/prevent-abbreviations": "off"
-    }
-  }
+  ]
 }
