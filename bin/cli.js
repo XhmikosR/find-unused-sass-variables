@@ -42,8 +42,7 @@ async function main(folders, options) {
 
   for (const result of results) {
     if (result.status === 'rejected') {
-      // TODO: switch to console.error and result.reason.message in the next major version
-      console.log(picocolors.red(result.reason));
+      console.error(picocolors.red(result.reason.message));
       status = 1;
     }
   }
