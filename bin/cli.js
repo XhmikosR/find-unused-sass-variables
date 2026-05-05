@@ -16,7 +16,7 @@ program
   .description(description)
   .version(version, '-v, --version')
   .option('-i, --ignore <variables>', 'ignore variables, comma separated', '')
-  .option('-if, --ignoreFiles <files>', 'ignore files, comma separated', '')
+  .option('--ignoreFiles <files>', 'ignore files, comma separated', '')
   .option('-e, --extension [types...]', 'file extensions to search', ['scss'])
   .action((folders, options) => {
     console.log('Looking for unused variables');
