@@ -85,4 +85,20 @@ test('accepts multiple folder arguments', async() => {
   assert.equal((stdout.match(/No unused variables/g) ?? []).length, 2);
 });
 
+test('--css-variables exits 0 when no css vars present', async() => {
+  const { code } = await run('tests/fixtures/all-used/', '--css-variables');
+  assert.equal(code, 0);
+});
+
+test('--css-variables exits 1 when unused custom property found', async() => {
+  const { code, stdout } = await run('tests/fixtures/css-vars/', '--css-variables');
+  assert.equal(code, 1);
+  assert.equal(stdout.includes('--unused-color'), true);
+});
+
+test('without --css-variables, css-vars fixture exits 0', async() => {
+  const { code } = await run('tests/fixtures/css-vars/');
+  assert.equal(code, 0);
+});
+
 test.run();

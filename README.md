@@ -30,6 +30,7 @@ One or more folder paths can be passed at once.
 | `--ignore <variables>` | `-i` | Comma-separated variable names to skip (e.g. `$my-var,$another`) | - |
 | `--ignoreFiles <files>` | - | Comma-separated file glob patterns to skip (e.g. `**/_variables.scss`) | - |
 | `--extension [types...]` | `-e` | File extension(s) to scan. Repeatable or comma-separated. | `scss` |
+| `--css-variables` | | Include CSS custom properties (`--var` declarations) | `false` |
 | `--help` | | Print help | - |
 
 ### Examples
@@ -49,6 +50,9 @@ fusv src/ --ignoreFiles='**/_variables.scss'
 
 # Scan .scss and .css files
 fusv src/ -e scss -e css
+
+# Also scan for unused CSS custom properties
+fusv src/ --css-variables
 
 # Combine options
 fusv src/ --ignore='$unused' --ignoreFiles='**/vendor/**' -e scss -e sass
@@ -94,6 +98,7 @@ findAsync(dir: string, options?: Options): Promise<Result>
 | `ignore` | `string[]` | Variable names to skip, e.g. `['$my-var', '$brand-color']` | `[]` |
 | `ignoreFiles` | `string[]` | File glob patterns to skip, e.g. `['**/_variables.scss']` | `[]` |
 | `fileExtensions` | `string[]` | Extensions to scan (leading dot optional), e.g. `['scss', 'css']` | `['scss']` |
+| `cssVariables` | `boolean` | Also detect CSS custom properties (`--var` declarations and `var()` references) | `false` |
 
 ### Return value
 
@@ -108,7 +113,7 @@ Each entry in `unused`:
 
 | Field | Type | Description |
 |---|---|---|
-| `name` | `string` | Variable name, e.g. `'$my-color'` |
+| `name` | `string` | Variable name. Sass variables start with `$` (e.g. `'$my-color'`); with `cssVariables: true`, custom properties start with `--` (e.g. `'--color-primary'`) |
 | `file` | `string` | Path to the file containing the variable |
 | `line` | `number` | Line number of the variable |
 
@@ -165,6 +170,40 @@ $used-variable-2: #ace;
 $intentionally-unused: #coffee;
 /* fusv-enable */
 ```
+
+## CSS custom properties
+
+By default the tool only detects Sass variables (`$var` syntax). Pass `cssVariables: true` to
+also track CSS custom properties (`--var` declarations and `var()` usages).
+
+```js
+import { find } from 'find-unused-sass-variables';
+
+const result = find('src/', { cssVariables: true });
+// result.unused may include { name: '--unused-color', file: 'src/_tokens.scss', line: 4 }
+```
+
+Ignore specific custom properties the same way as Sass variables:
+
+```js
+find('src/', {
+  cssVariables: true,
+  ignore: ['--brand-color']
+});
+```
+
+The `fusv-disable` / `fusv-enable` comments suppress custom property declarations just as they
+do for Sass variables:
+
+```scss
+// fusv-disable
+--intentionally-unused: #coffee; /* will NOT be reported */
+// fusv-enable
+```
+
+> **Note**: Custom property declarations that use Sass interpolation in the property name
+> (e.g. `--#{$prefix}-color: red;`) are not tracked as CSS custom properties to avoid
+> false positives. The Sass variable `$prefix` is still counted as used.
 
 ## Notes
 

@@ -18,6 +18,7 @@ program
   .option('-i, --ignore <variables>', 'ignore variables, comma separated', '')
   .option('--ignoreFiles <files>', 'ignore files, comma separated', '')
   .option('-e, --extension [types...]', 'file extensions to search', ['scss'])
+  .option('--css-variables', 'include CSS custom properties (--var syntax)', false)
   .action((folders, options) => {
     console.log('Looking for unused variables');
 
@@ -28,7 +29,8 @@ program
     return main(folders, {
       ignore: options.ignore,
       ignoreFiles: options.ignoreFiles,
-      fileExtensions: options.extension
+      fileExtensions: options.extension,
+      cssVariables: options.cssVariables
     });
   })
   .showHelpAfterError()

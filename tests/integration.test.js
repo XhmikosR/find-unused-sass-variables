@@ -110,4 +110,35 @@ test('variable declared in one file but used in another is not flagged', () => {
   assert.equal(unusedNames.has('$black-lightest'), false);
 });
 
+// CSS custom properties
+test('cssVariables: false (default) finds nothing in css-vars fixture', () => {
+  const result = find('./tests/fixtures/css-vars/');
+  assert.equal(result.total, 0);
+  assert.equal(result.unused.length, 0);
+});
+
+test('cssVariables: true detects used and unused custom properties', () => {
+  const result = find('./tests/fixtures/css-vars/', { cssVariables: true });
+  assert.equal(result.total, 2);
+  assert.equal(result.unused.length, 1);
+  assert.equal(result.unused[0].name, '--unused-color');
+});
+
+test('cssVariables: true with ignore filters out custom property', () => {
+  const result = find('./tests/fixtures/css-vars/', {
+    cssVariables: true,
+    ignore: ['--unused-color']
+  });
+  assert.equal(result.unused.length, 0);
+});
+
+test('cssVariables: true unused entry has name starting with --', () => {
+  const result = find('./tests/fixtures/css-vars/', { cssVariables: true });
+  const entry = result.unused[0];
+  assert.equal(typeof entry.name, 'string');
+  assert.equal(typeof entry.line, 'number');
+  assert.equal(typeof entry.file, 'string');
+  assert.equal(entry.name.startsWith('--'), true);
+});
+
 test.run();

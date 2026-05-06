@@ -303,4 +303,91 @@ $x: $y !default;
   assert.equal(result.usages.has('$y'), true);
 });
 
+// CSS custom properties
+test('--var decl ignored when cssVariables is false (default)', () => {
+  const result = parse('f.scss', '--color: red;', []);
+  assert.equal(result.variables.length, 0);
+});
+
+test('--var decl collected when cssVariables is true', () => {
+  const result = parse('f.scss', '--color-primary: red;', [], true);
+  assert.equal(result.variables.length, 1);
+  assert.equal(result.variables[0].name, '--color-primary');
+});
+
+test('--var decl records correct line and file', () => {
+  const scss = `
+--color: red;
+`;
+  const result = parse('my.scss', scss, [], true);
+  assert.equal(result.variables[0].file, 'my.scss');
+  assert.equal(result.variables[0].line, 2);
+});
+
+test('--var decl excluded when in ignoreList', () => {
+  const result = parse('f.scss', '--color: red;', ['--color'], true);
+  assert.equal(result.variables.length, 0);
+});
+
+test('var(--name) usage detected', () => {
+  const result = parse('f.scss', '.a { color: var(--color); }', [], true);
+  assert.equal(result.usages.has('--color'), true);
+});
+
+test('var(--name, fallback) captures only the name', () => {
+  const result = parse('f.scss', '.a { color: var(--color, #fff); }', [], true);
+  assert.equal(result.usages.has('--color'), true);
+  assert.equal(result.usages.has('--color, #fff'), false);
+});
+
+test('var() in at-rule params is detected', () => {
+  const scss = '@media (min-width: var(--bp)) { .a { color: red; } }';
+  const result = parse('f.scss', scss, [], true);
+  assert.equal(result.usages.has('--bp'), true);
+});
+
+test('fusv-disable suppresses --var decl', () => {
+  const scss = `
+// fusv-disable
+--x: red;
+// fusv-enable
+--y: blue;
+`;
+  const result = parse('f.scss', scss, [], true);
+  assert.deepEqual(result.variables.map(v => v.name), ['--y']);
+});
+
+test('$sass-var and --var both collected when cssVariables is true', () => {
+  const scss = `
+$a: 1px;
+--b: red;
+`;
+  const result = parse('f.scss', scss, [], true);
+  assert.deepEqual(result.variables.map(v => v.name), ['$a', '--b']);
+});
+
+test('--var decl nested in a rule is collected', () => {
+  const scss = `
+.foo {
+  --nested: red;
+}
+`;
+  const result = parse('f.scss', scss, [], true);
+  assert.equal(result.variables[0].name, '--nested');
+});
+
+test('interpolated --#{$x}-color prop is not tracked as a CSS var', () => {
+  const scss = `
+$prefix: bs;
+.c {
+  --#{$prefix}-color: red;
+}
+`;
+  const result = parse('f.scss', scss, [], true);
+  // $prefix is a Sass variable; the interpolated -- prop must not be collected as a CSS var
+  assert.equal(result.variables.every(v => !v.name.startsWith('--')), true);
+  // but $prefix must still be in usages
+  assert.equal(result.usages.has('$prefix'), true);
+});
+
 test.run();

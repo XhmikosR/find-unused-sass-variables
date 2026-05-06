@@ -10,7 +10,8 @@ import { parse } from './lib/parse-variable.js';
 const defaultOptions = {
   ignore: [],
   ignoreFiles: [],
-  fileExtensions: ['scss']
+  fileExtensions: ['scss'],
+  cssVariables: false
 };
 
 function buildGlobPattern(dir, options) {
@@ -60,19 +61,19 @@ function findSync(dirPath, opts = {}) {
 
 async function parseFileAsync(file, options) {
   const content = await readFile(file, 'utf8');
-  return parseFileContent(file, content, options.ignore);
+  return parseFileContent(file, content, options.ignore, options.cssVariables);
 }
 
 function parseFileSync(file, options) {
   const content = readFileSync(file, 'utf8');
-  return parseFileContent(file, content, options.ignore);
+  return parseFileContent(file, content, options.ignore, options.cssVariables);
 }
 
-function parseFileContent(fileName, content, ignoreList) {
+function parseFileContent(fileName, content, ignoreList, cssVariables) {
   const fileContent = stripBom(content) // Strip BOM mark
     .replaceAll(/^---$/gm, ''); // Remove (Jekyll, YAML) front-matter comments
 
-  return parse(fileName, fileContent, ignoreList);
+  return parse(fileName, fileContent, ignoreList, cssVariables);
 }
 
 function parseOptions(opts) {
@@ -80,7 +81,8 @@ function parseOptions(opts) {
   const options = {
     ignore: opts.ignore ?? defaultOptions.ignore,
     ignoreFiles: opts.ignoreFiles ?? defaultOptions.ignoreFiles,
-    fileExtensions: opts.fileExtensions ?? defaultOptions.fileExtensions
+    fileExtensions: opts.fileExtensions ?? defaultOptions.fileExtensions,
+    cssVariables: opts.cssVariables ?? defaultOptions.cssVariables
   };
 
   for (const option of ['ignore', 'ignoreFiles']) {
