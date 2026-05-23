@@ -40,8 +40,6 @@
     "picocolors": "^1.1.1",
     "postcss": "^8.5.13",
     "postcss-scss": "^4.0.9",
-    "slash": "^5.1.0",
-    "strip-bom": "^5.0.0",
     "tinyglobby": "^0.2.16"
   },
   "devDependencies": {
