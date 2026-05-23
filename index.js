@@ -2,8 +2,6 @@ import { readFileSync, statSync } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import escapeRegex from 'escape-string-regexp';
-import slash from 'slash';
-import stripBom from 'strip-bom';
 import { glob, globSync } from 'tinyglobby';
 import { parse } from './lib/parse-variable.js';
 
@@ -14,7 +12,7 @@ const defaultOptions = {
 };
 
 function buildGlobPattern(dir, options) {
-  return slash(path.join(dir, `**/*.${options.fileExtensions}`));
+  return path.join(dir, `**/*.${options.fileExtensions}`).replaceAll('\\', '/');
 }
 
 async function findAsync(dirPath, opts = {}) {
@@ -81,8 +79,9 @@ function parseFileSync(file, options) {
 }
 
 function parseFileContent(fileName, content, ignoreList) {
-  const fileContent = stripBom(content) // Strip BOM mark
-    .replaceAll(/^---$/gm, ''); // Remove (Jekyll, YAML) front-matter comments
+  // Strip BOM mark if present, and remove front-matter comments (e.g. Jekyll, YAML)
+  const fileContent = (content.codePointAt(0) === 0xFE_FF ? content.slice(1) : content)
+    .replaceAll(/^---$/gm, '');
   const variables = parse(fileName, fileContent, ignoreList);
 
   return {
