@@ -38,7 +38,7 @@
     "commander": "^12.1.0",
     "escape-string-regexp": "^5.0.0",
     "picocolors": "^1.1.1",
-    "postcss": "^8.5.24",
+    "postcss": "^8.5.26",
     "postcss-scss": "^4.0.9",
     "tinyglobby": "^0.2.17"
   },
@@ -60,5 +60,8 @@
     "unused",
     "variables",
     "scss"
-  ]
+  ],
+  "allowScripts": {
+    "unrs-resolver@1.11.1": true
+  }
 }
