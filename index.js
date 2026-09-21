@@ -142,7 +142,29 @@ function parseOptions(opts) {
   return options;
 }
 
+function parseString(scssString, opts = {}) {
+  if (typeof scssString !== 'string') {
+    throw new TypeError('`scssString` should be a string');
+  }
+
+  opts ??= {};
+  const ignore = opts.ignore ?? [];
+  if (!Array.isArray(ignore)) {
+    throw new TypeError('`ignore` should be an Array');
+  }
+
+  const fileName = opts.fileName ?? 'string.scss';
+  const ignoreList = ignore.map(val => val.trim());
+
+  const fileContent = (scssString.codePointAt(0) === 0xFE_FF ? scssString.slice(1) : scssString)
+    .replaceAll(/^---$/gm, '');
+  const variables = parse(fileName, fileContent, ignoreList);
+
+  return filterVariables(fileContent, variables);
+}
+
 export {
   findSync as find,
-  findAsync
+  findAsync,
+  parseString
 };
